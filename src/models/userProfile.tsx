@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IUser extends Document {
+export interface IUserProfile extends Document {
   userID: mongoose.Schema.Types.ObjectId;
   title: string;
   bio?: string;
@@ -34,7 +34,7 @@ export interface IUser extends Document {
   updatedAt: Date;
 }
 
-const userSchema = new Schema<IUser>(
+const userProfileSchema = new Schema<IUserProfile>(
   {
     userID: {
       type: Schema.Types.ObjectId,
@@ -104,5 +104,5 @@ const userSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
-export const User = mongoose.model<IUser>("User", userSchema);
+export const UserProfile = mongoose.model<IUserProfile>("UserProfile", userProfileSchema);
 
