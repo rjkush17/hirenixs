@@ -3,6 +3,7 @@ import ThemeSwitch from "@/components/theme-switcher";
 import type { RootState } from "@reduxjs/toolkit/query";
 import { useSelector, useDispatch } from "react-redux";
 import { decrement, increment } from "@/store/slices/counterSlice";
+import { Button } from "@/components/ui/button"
     
 export default function Home() {
     const count = useSelector((state: RootState) => state.counter.value);
@@ -13,7 +14,8 @@ export default function Home() {
         <div>
             <h1>Hello, Hirenixs</h1>
             <ThemeSwitch />
-            <div className="">Hello world</div>
+            <div className="bg-red-500">Hello world</div>
+                  <Button>Click me</Button>
             <div>
                 <div>
                     <button
