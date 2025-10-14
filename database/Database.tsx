@@ -14,8 +14,8 @@ if (!dbURL) {
   throw new Error("DATABASE_URL is not defined in environment variables");
 }
 
-let cached: Cached = global.mongoose ?? { connection: null, promise: null };
-global.mongoose = cached;
+let cached: Cached = (globalThis as any).mongoose ?? { connection: null, promise: null };
+globalThis.mongoose = cached;
 
 const connectDB = async () => {
   if (cached.connection) return cached.connection;
