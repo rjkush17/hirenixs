@@ -32,9 +32,9 @@ export default function RootLayout({
       >
         <StoreProvider>
           <ThemeProvider>
-            <div className="flex flex-row">
-              <Sidebar />
-              <main>{children}</main>
+            <div className="flex flex-row w-screen h-screen w-full">
+            <Sidebar />
+              <main className="">{children}</main>
             </div>
           </ThemeProvider>
         </StoreProvider>
