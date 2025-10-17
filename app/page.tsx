@@ -1,5 +1,4 @@
 "use client";
-import ThemeSwitch from "@/components/theme-switcher";
 import type { RootState } from "@reduxjs/toolkit/query";
 import { useSelector, useDispatch } from "react-redux";
 import { decrement, increment } from "@/store/slices/counterSlice";
@@ -13,7 +12,6 @@ export default function Home() {
     return (
         <div>
             <h1>Hello, Hirenixs</h1>
-            <ThemeSwitch />
             <div className="bg-red-500">Hello world</div>
                   <Button>Click me</Button>
             <div>
