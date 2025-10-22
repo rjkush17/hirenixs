@@ -4,6 +4,8 @@ import "@/css/global.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import StoreProvider from "@/components/store-provider";
 import Sidebar from "@/components/sidebar/Sidebar";
+import { Toaster } from 'react-hot-toast';
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +36,7 @@ export default function RootLayout({
           <ThemeProvider>
             <div className="flex flex-row w-screen h-screen w-full">
             <Sidebar />
+                      <Toaster />
               <main className="">{children}</main>
             </div>
           </ThemeProvider>

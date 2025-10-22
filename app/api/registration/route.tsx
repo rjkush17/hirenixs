@@ -16,7 +16,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     await connectDB();
 
     const { email, password, name, role, username }: ReqData = await req.json();
-
+    console.log({email, password, name, role, username})
     const existingUser: string | null = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -32,7 +32,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         { status: 400 },
       );
     }
-
+        console.log(password)
     // Password validation
     if (!password || password.length < 6) {
       return NextResponse.json(
