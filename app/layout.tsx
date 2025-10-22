@@ -33,8 +33,8 @@ export default function RootLayout({
       >
         <StoreProvider>
           <ThemeProvider>
-            <Toaster richColors position="top-right" duration={5000} closeButton />
-            <div className="flex flex-row w-screen h-screen w-full">
+            <Toaster richColors position="top-right" duration={5000}/>
+            <div className="">
               <Sidebar />
               <main className="">{children}</main>
             </div>

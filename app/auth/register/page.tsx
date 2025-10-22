@@ -122,6 +122,7 @@ const Register = () => {
                                                 {...field}
                                             />
                                         </FormControl>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -167,14 +168,12 @@ const Register = () => {
                                 )}
                             />{" "}
                             {isLoading ? (
-                                <Button className="w-full" variant="outline" disabled>
+                                <Button className="w-full" disabled>
                                     <Spinner />
                                     Creating Account...
                                 </Button>
                             ) : (
-                                <Button variant="outline" className="w-full">
-                                    Create Account
-                                </Button>
+                                <Button className="w-full">Create Account</Button>
                             )}
                         </form>
                     </Form>

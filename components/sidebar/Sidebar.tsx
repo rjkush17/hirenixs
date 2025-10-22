@@ -1,17 +1,17 @@
-import Link from "next/link"
+"use client";
+import Link from "next/link";
 import ThemeSwitch from "@/components/theme-switcher";
-
+import { signOut } from "next-auth/react";
 
 function Sidebar() {
-
-  return (
-    <div className="flex flex-col w-28 bg-red-500">
+    return (
+        <div className="flex justify-evenly w-full bg-red-500">
             <Link href="/auth/login">Logins page</Link>
-            <Link href='/auth/register'>Register pages</Link>
-                        <ThemeSwitch />
-
-    </div>
-  )
+            <Link href="/auth/register">Register pages</Link>
+            <ThemeSwitch />
+            <button onClick={() => signOut()}>Sign Out</button>
+        </div>
+    );
 }
 
-export default Sidebar
+export default Sidebar;
