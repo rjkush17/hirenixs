@@ -7,51 +7,48 @@ const usePost = () => {
   const [controller, setController] = useState<AbortController>();
   const [result, setResult] = useState<any>(null);
 
-  const apiCall = async (path: string, bodyData: Record<string, any>) => {
-    if (controller) {
-      controller.abort();
+const apiCall = async (path: string, bodyData: Record<string, any>) => {
+  if (controller) controller.abort();
+
+  const newController = new AbortController();
+  setController(newController);
+  setIsLoading(true);
+  setIsError(null);
+
+  try {
+    const isFormData = bodyData instanceof FormData;
+    const response = await fetch(path, {
+      method: "POST",
+      headers: isFormData
+        ? undefined
+        : { "content-type": "application/json;charset=UTF-8" },
+      body: isFormData ? bodyData : JSON.stringify(bodyData),
+      signal: newController.signal,
+    });
+
+    const resData = await response.json();
+
+    if (!response.ok) {
+      const errorMsg = resData.error || "Request failed";
+      setIsError(errorMsg);
+      throw new Error(errorMsg); // ❗ This will trigger toast.error
     }
 
-    let newController = new AbortController();
-    setController(newController);
-    setIsLoading(true);
+    setResult(resData);
     setIsError(null);
-    try {
-            console.log('body Data with the json ---- ',JSON.stringify(bodyData))
-    const isFormData = bodyData instanceof FormData
-      const response = await fetch(path, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json;charset=UTF-8",
-        },
-        body: isFormData ? bodyData: JSON.stringify(bodyData),
-        signal: newController.signal,
-      });
-
-      const resData = await response.json();
-      if (!response.ok) {
-        setIsLoading(false);
-        setIsError(resData.error);
-        setResult(null);
-        return;
-      }
-      setResult(resData);
-      setIsError(null);
-      setIsLoading(false);
-
-      return { isLoading, isError, result };
-    } catch (error: unknown) {
-      if (error instanceof Error && error.name === "AbortError") {
-        setIsError("API aborted");
-        return;
-      }
-      console.log("Error while fetching  API", error);
-      setIsError("Error while Sending Request")
-      return;
-    } finally {
-      setIsLoading(false);
+    return resData.message || "Success"; // ✅ return actual message
+  } catch (error: any) {
+    if (error.name === "AbortError") {
+      setIsError("API aborted");
+      throw new Error("API aborted");
     }
-  };
+    console.error("Error while fetching API:", error);
+    setIsError(error.message || "Unknown error");
+    throw error; // ✅ Important for toast.promise to catch
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   useEffect(() => {
     return () => {

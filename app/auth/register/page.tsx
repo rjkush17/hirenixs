@@ -30,8 +30,7 @@ import {
 } from "@/components/ui/select";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { Spinner } from "@/components/ui/spinner";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 const Register = () => {
     const form = useForm<registerFormSchema>({
@@ -45,23 +44,18 @@ const Register = () => {
         },
     });
 
-    const { isLoading, result, isError, apiCall } = usePOST();
+    const { isLoading, apiCall } = usePOST();
 
     const onSubmit = async (value: registerFormSchema) => {
-        await apiCall("/api/registration/", value);
-
-        console.log("Api request sent")
-        return
+        toast.promise(
+            apiCall("/api/registration/", value), // the promise
+            {
+                loading: "Registering usere...",
+                success: (res: any) => res,
+                error: (err: any) => err.message || "Registration failed!",
+            },
+        );
     };
-
-    useEffect(() => {
-        if (isError) {
-            toast.error(isError);
-        }
-        if (result) {
-            toast.success("Successfully toasted!");
-        }
-    },[isError, result]);
 
     return (
         <div className="w-screen h-full flex justify-center items-center">
