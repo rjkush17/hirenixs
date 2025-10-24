@@ -159,8 +159,8 @@ const Register = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="user">User</SelectItem>
-                                                <SelectItem value="company">Company</SelectItem>
+                                                <SelectItem value="individual">Individual (Looking for Jobs)</SelectItem>
+                                                <SelectItem value="organization">Organization (Looking for Job Seekers)</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />

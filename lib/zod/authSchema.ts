@@ -22,8 +22,8 @@ export const registerSchema = z
     name: z.string().min(4, "Name is required").max(30, "Name is too long"),
 
     role: z.enum(
-      ["user", "company"],
-      "Role must be either 'user' or 'company'",
+      ["individual", "organization"],
+      "Role must be either 'Individual' or 'Organization'",
     ),
 
     username: z

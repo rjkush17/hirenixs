@@ -7,7 +7,7 @@ interface ReqData {
   email: string;
   password: string;
   name: string;
-  role: 'user' | 'company';
+  role: 'individual' | 'organization';
   username: string;
 }
 
@@ -49,9 +49,9 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
       );
     }
     // Role validation
-    if (role !== "user" && role !== "company") {
+    if (role !== "individual" && role !== "organization") {
       return NextResponse.json(
-        { error: "Role must be either 'user' or 'company'" },
+        { error: "Role must be either 'individual' or 'organization'" },
         { status: 400 },
       );
     }
