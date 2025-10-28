@@ -7,7 +7,7 @@ const usePost = () => {
   const [controller, setController] = useState<AbortController>();
   const [result, setResult] = useState<any>(null);
 
-const apiCall = async (path: string, bodyData: Record<string, any>) => {
+const apiCall = async (path: string, bodyData: Record<string, any> | FormData) => {
   if (controller) controller.abort();
 
   const newController = new AbortController();
