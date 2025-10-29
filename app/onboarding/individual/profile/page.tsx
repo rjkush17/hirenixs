@@ -23,11 +23,12 @@ export default function Page(){
 
     const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
+        if (file &&  session && session.user) {
             const formData = new FormData(); // formData to send file
             formData.append("file", file);
-
-            await apiCall("/uploadProfileImage", formData); // depends on how usePost handles it
+            formData.append("userID", session?.user.id || "")
+            formData.append("email",session?.user?.email || "")
+            await apiCall("/api/profile/upload", formData);
             console.log("upload image function ran");
         }
     };
