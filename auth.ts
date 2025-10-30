@@ -24,7 +24,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         strategy: "jwt",
     },
     callbacks: {
-        // TODO: SignIn function for take oauth IDs and check if user register in DB if no then create user and saved in DB
+        async signIn({user,account}){
+        console.log("signIn function account  => ", account)
+        console.log("signIn function user => ", user)
+        return true
+        },
         // TODO: jwt function that take token and check if the anything missing then return it
         // TODO: just return
         async redirect({ url, baseUrl }) {

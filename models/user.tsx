@@ -4,10 +4,16 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
-  avatar?: string;
+  avatar?: {
+    link: string;
+    publicID: string;
+  };
   username: string;
-  role: "individual" | "organization";
+  role: "individual" | "organization" | null;
   isVerified: boolean;
+  onboardingVerified: boolean;
+  providerID: string;
+  providerName: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -32,9 +38,14 @@ const userSchema = new Schema<IUser>(
       required: true,
     },
     avatar: {
-      type: String,
-      trim: true,
-      default: "",
+      link: {
+        type: String,
+        trim: true,
+      },
+      publicID: {
+        type: String,
+        trim: true,
+      },
     },
     username: {
       type: String,
@@ -44,12 +55,25 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["individual", "organization"],
-      default: "individual",
+      enum: ["individual", "organization", null],
+      default: null,
     },
     isVerified: {
       type: Boolean,
       default: false,
+      required: true,
+    },
+    onboardingVerified: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    providerName: {
+      type: String,
+      required: true,
+    },
+    providerID: {
+      type: String,
       required: true,
     },
   },

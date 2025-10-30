@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { IUser, User } from "@/models/user";
 import connectDB from "@/database/Database";
 import bcrypt from "bcryptjs";
+import { v4 as uuidv4 } from "uuid";
 
 interface ReqData {
   email: string;
   password: string;
   name: string;
-  role: 'individual' | 'organization';
+  role: "individual" | "organization";
   username: string;
 }
 
@@ -16,7 +17,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     await connectDB();
 
     const { email, password, name, role, username }: ReqData = await req.json();
-    console.log({email, password, name, role, username})
+    console.log({ email, password, name, role, username });
     const existingUser: string | null = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -32,7 +33,6 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         { status: 400 },
       );
     }
-        console.log(password)
     // Password validation
     if (!password || password.length < 6) {
       return NextResponse.json(
@@ -65,6 +65,9 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
       email,
       password: hashPassword,
       isVerified: false,
+      onboardingVerified: false,
+      providerName: "credentials",
+      providerID: uuidv4(),
       username,
       role,
     });
