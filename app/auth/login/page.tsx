@@ -130,11 +130,11 @@ const Login = () => {
                         {/* OR text */}
                         <div className="flex-grow h-px bg-muted" /> {/* right line */}
                     </div>
-                    <Button variant="outline" className="w-full mb-2">
+                    <Button variant="outline" className="w-full mb-2" onClick={() => signIn("google")}>
                         {" "}
                         <FaGoogle /> Login with Google
                     </Button>
-                    <Button variant="outline" className="w-full">
+                    <Button variant="outline" className="w-full" onClick={() => signIn("github")}>
                         {" "}
                         <FaGithub /> Login with Github
                     </Button>
