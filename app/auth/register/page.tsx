@@ -1,7 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import usePOST from "@/hooks/usePOST";
 import Link from "next/link";
 import {
@@ -32,8 +32,13 @@ import {
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Register = () => {
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  if (session?.user) router.push("/");
   const form = useForm<registerFormSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {

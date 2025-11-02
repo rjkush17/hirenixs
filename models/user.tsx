@@ -3,7 +3,7 @@ import mongoose, { Document, Schema, Model } from "mongoose";
 export interface IUser extends Document {
   name: string;
   email: string;
-  password: string;
+  password?: string;
   avatar?: {
     link: string;
     publicID: string;
@@ -14,8 +14,6 @@ export interface IUser extends Document {
   onboardingVerified: boolean;
   providerID: string;
   providerName: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 const userSchema = new Schema<IUser>(
@@ -35,7 +33,7 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       trim: true,
-      required: true,
+      required: false,
     },
     avatar: {
       link: {

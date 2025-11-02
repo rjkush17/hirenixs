@@ -25,8 +25,16 @@ import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { useSession } from "next-auth/react";
+import { useRouter } from 'next/navigation'
 
 const Login = () => {
+      const router = useRouter()
+    const {data: session } = useSession();
+
+    if(session?.user) router.push("/")
+
+
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
