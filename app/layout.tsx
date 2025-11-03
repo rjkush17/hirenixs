@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "@/css/global.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import StoreProvider from "@/components/store-provider";
+import Providers from "@/utils/Wrapper";
 import Sidebar from "@/components/sidebar/Sidebar";
-import { Toaster } from "@/components/ui/sonner";
-import { SessionProvider } from "next-auth/react";
 
 const nunito_sans = Nunito_Sans({
   weight: "600",
@@ -40,17 +37,10 @@ export default function RootLayout({
       />
       <link rel="manifest" href="/site.webmanifest" />
       <body className={`${nunito_sans.className} antialiased`}>
-        <SessionProvider>
-          <StoreProvider>
-            <ThemeProvider>
-              <Toaster richColors position="top-right" duration={5000} />
-              <div>
-                <Sidebar />
-                <main className="">{children}</main>
-              </div>
-            </ThemeProvider>
-          </StoreProvider>
-        </SessionProvider>
+        <Providers>
+          <Sidebar />
+          <main>{children}</main>
+        </Providers>
       </body>
     </html>
   );
