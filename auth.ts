@@ -4,7 +4,7 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "@/lib/auth/credentialsProvider";
 import connectDB from "./database/Database";
 import { IUser, User } from "@/models/user";
-import createUsername from "./lib/generateUsername";
+import createUsername from "@/utils/generateUsername";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -41,7 +41,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         if (!name || !email || !provider || !providerAccountId) {
-          throw new Error("Missing required user or account information.");
+          console.error("Missing required user or account info");
+          return false;
         }
 
         const username = createUsername(name);
@@ -51,7 +52,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name,
           username: username,
           role: null,
-          isVerified: true,
           onboardingVerified: false,
           providerName: provider,
           providerID: providerAccountId,
@@ -61,6 +61,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!userCreated) return false;
 
         user = userModel;
+
         return true;
       } catch (error) {
         console.log("error while singIn function ", error);
@@ -69,22 +70,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     async jwt({ token, user }) {
-      // console.log("jwt callback  token", token);
-      // console.log("jwt callback  user", user);
       if (user && user.email) {
         const userDetails: IUser | null = await User.findOne({
           email: user.email,
         });
 
         if (!userDetails) {
-          throw new Error("user not find while create jwt token");
+          console.error("User not found while creating JWT token");
+          return token;
         }
 
         token.name = userDetails.name;
         token.avatar = userDetails.avatar;
         token.username = userDetails.username;
         token.role = userDetails.role;
-        token.isVerified = userDetails.isVerified;
         token.onboardingVerified = userDetails.onboardingVerified;
         token.providerName = userDetails.providerName;
       }
@@ -96,7 +95,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.avatar = token.avatar;
       session.user.username = token.username;
       session.user.role = token.role;
-      session.user.isVerified = token.isVerified;
       session.user.onboardingVerified = token.onboardingVerified;
       session.user.providerName = token.providerName;
       return session;
