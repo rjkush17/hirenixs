@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { IUser, User } from "@/models/user";
+import { User } from "@/models/user";
+import { UserOTP, IUserOTP } from "@/models/userotp";
 import connectDB from "@/database/Database";
 import bcrypt from "bcryptjs";
-import { v4 as uuidv4 } from "uuid";
+import genrateOTP from "@/utils/generateOTP";
+import { otpMail } from "@/utils/mail/registrationOTPMail";
+import sendMail from "@/lib/nodemailer/sendMail";
+import type { mailDetailsType } from "@/lib/nodemailer/sendMail";
 
 interface ReqData {
   email: string;
@@ -59,28 +63,53 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     const salt: string = bcrypt.genSaltSync(10);
     const hashPassword: string = bcrypt.hashSync(password, salt);
 
+    // Generating genrating OTP
+    const Userotp: string = genrateOTP();
+    const OTPgeneratedTime = Date.now();
+
+    // mail otp and body data
+    const htmlBody: string = otpMail(Userotp);
+    const mailData: mailDetailsType = {
+      from: "Hirenixs",
+      to: email,
+      subject: "OTP for the Hirenixs Registration",
+      html: htmlBody,
+    };
+    await sendMail(mailData);
+    console.log(1);
+
+    const isOPTCreated: IUserOTP | null = await UserOTP.findOne({ email });
+
+    if (isOPTCreated) {
+      isOPTCreated.otp = Userotp;
+      isOPTCreated.generatedTime = OTPgeneratedTime;
+      isOPTCreated.save();
+      console.log(2);
+
+      return NextResponse.json({ message: "OTP Resend Done" }, { status: 200 });
+    }
+    console.log(3);
+
     // Create new user
-    const newUser: IUser = await User.create({
+    const newUserOTP: IUserOTP = await UserOTP.create({
       name,
       email,
       password: hashPassword,
-      isVerified: false,
-      onboardingVerified: false,
-      providerName: "credentials",
-      providerID: uuidv4(),
       username,
+      otp: Userotp,
       role,
+      generatedTime: OTPgeneratedTime,
     });
+    console.log(4);
 
-    if (!newUser) {
+    if (!newUserOTP) {
       return NextResponse.json({
-        error: "user not created due to technical issues",
+        error: "OTP not created due to technical issues",
       });
     }
 
     return NextResponse.json({
       message: "User registration successful",
-      user: newUser,
     });
   } catch (error) {
     return NextResponse.json(
