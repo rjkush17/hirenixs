@@ -10,7 +10,6 @@ export interface IUser extends Document {
   };
   username: string;
   role: "individual" | "organization" | null;
-  isVerified: boolean;
   onboardingVerified: boolean;
   providerID: string;
   providerName: string;
@@ -55,11 +54,6 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: ["individual", "organization", null],
       default: null,
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-      required: true,
     },
     onboardingVerified: {
       type: Boolean,
