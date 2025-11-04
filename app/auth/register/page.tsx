@@ -45,6 +45,7 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import maskEmail from "@/utils/maskEmail";
 
 const Register = () => {
     const router = useRouter();
@@ -73,12 +74,14 @@ const Register = () => {
     const { isLoading, apiCall } = usePOST();
     const [showOTPForm, setShowOTPForm] = useState<boolean>(false);
     const [OTPEmail, setOTPEmail] = useState<string | null>(null);
+    const [userPassword, setUserPassword] = useState<string | null>(null);
 
     const onSubmit = async (value: registerFormSchema) => {
-        toast.promise(apiCall("/api/registration/", value), {
+        toast.promise(apiCall("/api/auth/registration", value), {
             loading: "Registering usere...",
             success: (res: any) => {
                 setOTPEmail(value.email);
+                setUserPassword(value.password);
                 setShowOTPForm(true);
                 return res;
             },
@@ -87,9 +90,23 @@ const Register = () => {
     };
 
     const onOTPSubmit = async (value: OTPSchemaType) => {
-
+        const payload = {
+            ...value,
+            email: OTPEmail,
+        };
+        console.log("payload.. ", payload);
+        toast.promise(apiCall("/api/auth/verifyregistrationotp", payload), {
+            loading: "Validating OTP...",
+            success: (res: any) => {
+                signIn("credentials", {
+                    identifier: OTPEmail,
+                    password: userPassword,
+                });
+                return res || "OTP verified successfully!";
+            },
+            error: (err: any) => err.message || "OTP verification failed!",
+        });
     };
-
     return (
         <div className="w-screen h-full flex justify-center items-center">
             <Card className="w-[500px] mx-auto mt-10">
@@ -224,14 +241,16 @@ const Register = () => {
                         <Form {...otpForm}>
                             <form
                                 onSubmit={otpForm.handleSubmit(onOTPSubmit)}
-                                className="w-2/3 space-y-6"
+                                className="w-full space-y-6"
                             >
                                 <FormField
                                     control={otpForm.control}
                                     name="pin"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>One-Time Password</FormLabel>
+                                            <FormLabel className="justify-center">
+                                                One-Time Password
+                                            </FormLabel>
                                             <FormControl>
                                                 <InputOTP maxLength={6} {...field}>
                                                     <InputOTPGroup>
@@ -244,15 +263,18 @@ const Register = () => {
                                                     </InputOTPGroup>
                                                 </InputOTP>
                                             </FormControl>
-                                            <FormDescription>
-                                                Please enter the one-time password sent to your phone.
+                                            <FormMessage className="text-center" />
+                                            <FormDescription className="text-center">
+                                                Please enter the one-time password sent to{" "}
+                                                {OTPEmail && maskEmail(OTPEmail)}.
                                             </FormDescription>
-                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />
 
-                                <Button type="submit">Submit</Button>
+                                <Button type="submit" className="w-full">
+                                    Submit
+                                </Button>
                             </form>
                         </Form>
                     )}

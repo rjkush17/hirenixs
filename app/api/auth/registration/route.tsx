@@ -21,7 +21,6 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     await connectDB();
 
     const { email, password, name, role, username }: ReqData = await req.json();
-    console.log({ email, password, name, role, username });
     const existingUser: string | null = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -76,7 +75,6 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
       html: htmlBody,
     };
     await sendMail(mailData);
-    console.log(1);
 
     const isOPTCreated: IUserOTP | null = await UserOTP.findOne({ email });
 
@@ -84,11 +82,9 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
       isOPTCreated.otp = Userotp;
       isOPTCreated.generatedTime = OTPgeneratedTime;
       isOPTCreated.save();
-      console.log(2);
 
       return NextResponse.json({ message: "OTP Resend Done" }, { status: 200 });
     }
-    console.log(3);
 
     // Create new user
     const newUserOTP: IUserOTP = await UserOTP.create({
@@ -100,7 +96,6 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
       role,
       generatedTime: OTPgeneratedTime,
     });
-    console.log(4);
 
     if (!newUserOTP) {
       return NextResponse.json({
