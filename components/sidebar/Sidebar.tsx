@@ -28,9 +28,9 @@ function Sidebar() {
         <>
           <button onClick={() => signOut()}>logout</button>
           <Link href="/onboarding/individual/profile"> onboard</Link>
-          <ThemeSwitch />
         </>
       )}
+      <ThemeSwitch />
     </div>
   );
 }

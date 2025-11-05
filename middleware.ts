@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   });
   // ---------- Public Routes ---------
   const { pathname } = request.nextUrl;
-  const publicPaths = ["/auth/login", "/auth/register", "/auth/forgot-password"];
+  const publicPaths = ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/resetpassword"];
   const isPublic = publicPaths.includes(pathname);
 
   // -------- Middleware#1: Protect Proivde Routes --------
