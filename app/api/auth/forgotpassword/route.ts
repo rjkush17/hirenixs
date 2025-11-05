@@ -31,7 +31,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
 
     const encodedEmail = encodeURIComponent(isRegistered.email);
     const encodedToken = encodeURIComponent(resetToken);
-    const url = `${process.env.BASE_URL}/resetpassword?token=${encodedToken}&mail=${encodedEmail}`;
+    const url = `${process.env.BASE_URL}/auth/resetpassword?token=${encodedToken}&mail=${encodedEmail}`;
 
     const mailBody: mailDetailsType = {
       from: "Hirenixs Team",
