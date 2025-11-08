@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import usePOST from "@/hooks/usePOST";
 import Link from "next/link";
 import {
@@ -73,16 +73,43 @@ const Register = () => {
 
     const { isLoading, apiCall } = usePOST();
     const [showOTPForm, setShowOTPForm] = useState<boolean>(false);
-    const [OTPEmail, setOTPEmail] = useState<string | null>(null);
-    const [userPassword, setUserPassword] = useState<string | null>(null);
+    const [resendTimer, setResendTimer] = useState<number>(0);
+    const [registerData, setRegisterData] = useState<registerFormSchema | null>({
+        email: "",
+        password: "",
+        username: "",
+        role: "individual",
+        confirmPassword: "",
+        name: "",
+    });
+
+    let interval: any;
+    const startResendTimer = (duration: number = 30) => {
+        if (interval) clearInterval(interval);
+        setResendTimer(duration);
+
+        interval = setInterval(() => {
+            setResendTimer((prev: number) => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    return 0;
+                } else {
+                    return prev - 1;
+                }
+            });
+        }, 1000);
+    };
+    useEffect(() => {
+        return () => clearInterval(interval);
+    }, []);
 
     const onSubmit = async (value: registerFormSchema) => {
         toast.promise(apiCall("/api/auth/registration", value), {
             loading: "Registering usere...",
             success: (res: any) => {
-                setOTPEmail(value.email);
-                setUserPassword(value.password);
                 setShowOTPForm(true);
+                setRegisterData(value);
+                startResendTimer(30);
                 return res;
             },
             error: (err: any) => err.message || "Registration failed!",
@@ -92,21 +119,35 @@ const Register = () => {
     const onOTPSubmit = async (value: OTPSchemaType) => {
         const payload = {
             ...value,
-            email: OTPEmail,
+            email: registerData?.email,
         };
-        console.log("payload.. ", payload);
         toast.promise(apiCall("/api/auth/verifyregistrationotp", payload), {
             loading: "Validating OTP...",
             success: (res: any) => {
                 signIn("credentials", {
-                    identifier: OTPEmail,
-                    password: userPassword,
+                    identifier: registerData?.email,
+                    password: registerData?.password,
                 });
                 return res || "OTP verified successfully!";
             },
             error: (err: any) => err.message || "OTP verification failed!",
         });
     };
+
+    const resentOTP = () => {
+        if (!registerData)
+            return toast.error(
+                "Unable to Registration Details Please Refresh the Page and Login Again",
+            );
+        toast.promise(apiCall("/api/auth/registration", registerData), {
+            loading: "Requesting for New OTP...",
+            success: (res: any) => {
+                return res || "OTP Validating Done";
+            },
+            error: (err: any) => err.message || "Failed to Sent New OTP",
+        });
+    };
+
     return (
         <div className="w-screen h-full flex justify-center items-center">
             <Card className="w-[500px] mx-auto mt-10">
@@ -238,52 +279,66 @@ const Register = () => {
                     )}
 
                     {showOTPForm && (
-                        <Form {...otpForm}>
-                            <form
-                                onSubmit={otpForm.handleSubmit(onOTPSubmit)}
-                                className="w-full space-y-6"
-                            >
-                                <FormField
-                                    control={otpForm.control}
-                                    name="pin"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="justify-center">
-                                                One-Time Password
-                                            </FormLabel>
-                                            <FormControl>
-                                                <InputOTP maxLength={6} {...field}>
-                                                    <InputOTPGroup>
-                                                        <InputOTPSlot index={0} />
-                                                        <InputOTPSlot index={1} />
-                                                        <InputOTPSlot index={2} />
-                                                        <InputOTPSlot index={3} />
-                                                        <InputOTPSlot index={4} />
-                                                        <InputOTPSlot index={5} />
-                                                    </InputOTPGroup>
-                                                </InputOTP>
-                                            </FormControl>
-                                            <FormMessage className="text-center" />
-                                            <FormDescription className="text-center">
-                                                Please enter the one-time password sent to{" "}
-                                                {OTPEmail && maskEmail(OTPEmail)}.
-                                            </FormDescription>
-                                        </FormItem>
-                                    )}
-                                />
+                        <>
+                            <Form {...otpForm}>
+                                <form
+                                    onSubmit={otpForm.handleSubmit(onOTPSubmit)}
+                                    className="w-full space-y-6"
+                                >
+                                    <FormField
+                                        control={otpForm.control}
+                                        name="pin"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="justify-center">
+                                                    One-Time Password
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <InputOTP maxLength={6} {...field}>
+                                                        <InputOTPGroup>
+                                                            <InputOTPSlot index={0} />
+                                                            <InputOTPSlot index={1} />
+                                                            <InputOTPSlot index={2} />
+                                                            <InputOTPSlot index={3} />
+                                                            <InputOTPSlot index={4} />
+                                                            <InputOTPSlot index={5} />
+                                                        </InputOTPGroup>
+                                                    </InputOTP>
+                                                </FormControl>
+                                                <FormMessage className="text-center" />
+                                                <FormDescription className="text-center">
+                                                    Please enter the one-time password sent to{" "}
+                                                    {registerData?.email && maskEmail(registerData.email)}
+                                                    .
+                                                </FormDescription>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                <Button type="submit" className="w-full">
-                                    Submit
+                                    <Button type="submit" className="w-full">
+                                        Submit
+                                    </Button>
+                                </form>
+                            </Form>
+                            {resendTimer > 0 ? (
+                                <Button className="w-full mt-4" disabled>
+                                    {" "}
+                                    {`Resend OTP in ${resendTimer}s`}
                                 </Button>
-                            </form>
-                        </Form>
+                            ) : (
+                                <Button className="w-full mt-4" onClick={resentOTP}>
+                                    {" "}
+                                    Resend OTP
+                                </Button>
+                            )}
+                        </>
                     )}
 
                     <div className="flex items-center my-4">
-                        <div className="flex-grow h-px bg-muted" /> {/* left line */}
+                        <div className="flex-grow h-px bg-muted" />
                         <span className="mx-2 text-sm text-muted-foreground">OR</span>{" "}
                         {/* OR text */}
-                        <div className="flex-grow h-px bg-muted" /> {/* right line */}
+                        <div className="flex-grow h-px bg-muted" />
                     </div>
                     <Button
                         variant="outline"

@@ -32,7 +32,7 @@ import { Input } from "@/components/ui/input";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -51,7 +51,11 @@ const Login = () => {
     const { data: session } = useSession();
     const { apiCall, isLoading } = usePost();
 
-    if (session?.user) router.push("/");
+    useEffect(() => {
+        if (session) {
+            router.push("/");
+        }
+    }, [session, router]);
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
@@ -78,6 +82,27 @@ const Login = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [otpSucessScreen, setOTPSucessScreen] = useState<boolean>(false);
     const [OTPEmail, setOTPEmail] = useState<string | null>(null);
+    const [resendTimer, setResendTimer] = useState<number>(0);
+
+    let interval: any;
+    const startResendTimer = (duration: number = 30) => {
+        if (interval) clearInterval(interval);
+        setResendTimer(duration);
+
+        interval = setInterval(() => {
+            setResendTimer((prev: number) => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    return 0;
+                } else {
+                    return prev - 1;
+                }
+            });
+        }, 1000);
+    };
+    useEffect(() => {
+        return () => clearInterval(interval);
+    }, []);
 
     const onSubmit = async (values: LoginFormValues) => {
         toast.promise(
@@ -89,12 +114,11 @@ const Login = () => {
                         redirect: false,
                     });
 
-                    if (result?.error) throw new Error(result.error || "Login failed");
+                    if (result?.error) {
+                        throw new Error(result.error || "Login failed");
+                    }
 
                     toast.success("Logged in successfully!");
-
-                    // optional safe redirect
-                    if (result?.ok) window.location.href = "/";
                 } finally {
                     setLoading(false);
                 }
@@ -113,6 +137,7 @@ const Login = () => {
             loading: "Requestin OTP",
             success: (res: any) => {
                 setOTPSucessScreen(true);
+                startResendTimer(60);
                 return res;
             },
             error: (err: any) => err.message || "OTP Request Failed",
@@ -124,16 +149,45 @@ const Login = () => {
             ...value,
             identifier: OTPEmail,
         };
-        console.log(payload);
-        toast.promise(apiCall("/api/auth/verifyloginotp", payload), {
-            loading: "Validating OTP...",
-            success: (res: any) => {
-                signIn("otp", {
-                    identifier: OTPEmail,
-                });
-                return res || "OTP verified successfully!";
+        toast.promise(
+            (async () => {
+                setLoading(true);
+                try {
+                    const result = await signIn("otp", {
+                        ...payload,
+                        redirect: false,
+                    });
+
+                    if (result?.error) {
+                        throw new Error(result.error || "Login failed");
+                    }
+
+                    toast.success("Logged in successfully!");
+                } finally {
+                    setLoading(false);
+                }
+            })(),
+            {
+                loading: "Logging in...",
+                success: "Logged in!",
+                error: "Invalid OTP or Expired",
             },
-            error: (err: any) => err.message || "OTP verification failed!",
+        );
+    };
+
+    const resentOTP = () => {
+        if (!OTPEmail)
+            return toast.error(
+                "Unable to Find Email or Username Please Refresh the Page and Login Again",
+            );
+        toast.promise(apiCall("/api/auth/otplogin", { identifier: OTPEmail }), {
+            loading: "Requestin OTP",
+            success: (res: any) => {
+                setOTPSucessScreen(true);
+                startResendTimer(60);
+                return res;
+            },
+            error: (err: any) => err.message || "OTP Request Failed",
         });
     };
 
@@ -150,7 +204,7 @@ const Login = () => {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Tabs defaultValue="otp" className="w-full">
+                    <Tabs defaultValue="credentials" className="w-full">
                         <h2 className="w-full text-center text-m">Login Method</h2>
                         <TabsList className="w-full">
                             <TabsTrigger value="credentials">Credntials</TabsTrigger>
@@ -249,62 +303,76 @@ const Login = () => {
                             )}
 
                             {otpSucessScreen && (
-                                <Form {...otpSubmitForm}>
-                                    <form
-                                        onSubmit={otpSubmitForm.handleSubmit(onOTPSubmit)}
-                                        className="w-full space-y-6"
-                                    >
-                                        <FormField
-                                            control={otpSubmitForm.control}
-                                            name="pin"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="justify-center">
-                                                        One-Time Password
-                                                    </FormLabel>
-                                                    <FormControl>
-                                                        <InputOTP maxLength={6} {...field}>
-                                                            <InputOTPGroup>
-                                                                <InputOTPSlot index={0} />
-                                                                <InputOTPSlot index={1} />
-                                                                <InputOTPSlot index={2} />
-                                                                <InputOTPSlot index={3} />
-                                                                <InputOTPSlot index={4} />
-                                                                <InputOTPSlot index={5} />
-                                                            </InputOTPGroup>
-                                                        </InputOTP>
-                                                    </FormControl>
-                                                    <FormMessage className="text-center" />
-                                                    <FormDescription className="text-center">
-                                                        {OTPEmail && OTPEmail.includes("@") ? (
-                                                            <>
-                                                                Please enter the one-time password sent to{" "}
-                                                                <b>{OTPEmail && maskEmail(OTPEmail)}</b>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                Please enter the one-time password sent to{" "}
-                                                                <b>{OTPEmail && maskUsername(OTPEmail)}</b>
-                                                            </>
-                                                        )}
-                                                    </FormDescription>
-                                                </FormItem>
-                                            )}
-                                        />
+                                <>
+                                    {" "}
+                                    <Form {...otpSubmitForm}>
+                                        <form
+                                            onSubmit={otpSubmitForm.handleSubmit(onOTPSubmit)}
+                                            className="w-full space-y-6"
+                                        >
+                                            <FormField
+                                                control={otpSubmitForm.control}
+                                                name="pin"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="justify-center">
+                                                            One-Time Password
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <InputOTP maxLength={6} {...field}>
+                                                                <InputOTPGroup>
+                                                                    <InputOTPSlot index={0} />
+                                                                    <InputOTPSlot index={1} />
+                                                                    <InputOTPSlot index={2} />
+                                                                    <InputOTPSlot index={3} />
+                                                                    <InputOTPSlot index={4} />
+                                                                    <InputOTPSlot index={5} />
+                                                                </InputOTPGroup>
+                                                            </InputOTP>
+                                                        </FormControl>
+                                                        <FormMessage className="text-center" />
+                                                        <FormDescription className="text-center">
+                                                            {OTPEmail && OTPEmail.includes("@") ? (
+                                                                <>
+                                                                    Please enter the one-time password sent to{" "}
+                                                                    <b>{OTPEmail && maskEmail(OTPEmail)}</b>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    Please enter the one-time password sent to{" "}
+                                                                    <b>{OTPEmail && maskUsername(OTPEmail)}</b>
+                                                                </>
+                                                            )}
+                                                        </FormDescription>
+                                                    </FormItem>
+                                                )}
+                                            />
 
-                                        <Button type="submit" className="w-full">
-                                            Submit
+                                            <Button type="submit" className="w-full">
+                                                Submit
+                                            </Button>
+                                        </form>
+                                    </Form>
+                                    {resendTimer > 0 ? (
+                                        <Button className="w-full mt-4" disabled>
+                                            {" "}
+                                            {`Resend OTP in ${resendTimer}s`}
                                         </Button>
-                                    </form>
-                                </Form>
+                                    ) : (
+                                        <Button className="w-full mt-4" onClick={resentOTP}>
+                                            {" "}
+                                            Resend OTP
+                                        </Button>
+                                    )}
+                                </>
                             )}
                         </TabsContent>
                     </Tabs>
                     <div className="flex items-center my-4">
-                        <div className="flex-grow h-px bg-muted" /> {/* left line */}
+                        <div className="flex-grow h-px bg-muted" />
                         <span className="mx-2 text-sm text-muted-foreground">OR</span>{" "}
                         {/* OR text */}
-                        <div className="flex-grow h-px bg-muted" /> {/* right line */}
+                        <div className="flex-grow h-px bg-muted" />
                     </div>
                     <Button
                         variant="outline"
