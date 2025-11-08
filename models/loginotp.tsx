@@ -4,6 +4,7 @@ export interface ILoginOTP extends Document {
   email: string;
   otp: string;
   generatedTime: number;
+  createdAt: Date;
 }
 
 const loginOTPSchema = new Schema<ILoginOTP>({
@@ -22,7 +23,11 @@ const loginOTPSchema = new Schema<ILoginOTP>({
   generatedTime: {
     type: Number,
     required: true,
-    expires: 300,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: 1800,
   },
 });
 

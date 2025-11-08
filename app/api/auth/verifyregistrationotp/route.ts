@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { UserOTP, IUserOTP } from "@/models/userotp";
 import { User, IUser } from "@/models/user";
 import connectDB from "@/database/Database";
-import { signIn } from "next-auth/react";
 
 interface ReqData {
   email: string;

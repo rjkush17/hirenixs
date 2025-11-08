@@ -16,6 +16,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
+
   // -------- Middleware#2: Protect Problic Routes for Loggied User -------
   if (token && isPublic) {
     console.log("middleware runs");

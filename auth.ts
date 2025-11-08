@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "@/lib/auth/credentialsProvider";
+import OTPProvider from "@/lib/auth/otpProvider";
 import connectDB from "./database/Database";
 import { IUser, User } from "@/models/user";
 import createUsername from "@/utils/generateUsername";
@@ -19,6 +20,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
 
     CredentialsProvider,
+    OTPProvider
   ],
   pages: {
     signIn: "/auth/login",

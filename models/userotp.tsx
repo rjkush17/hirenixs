@@ -8,6 +8,7 @@ export interface IUserOTP extends Document {
   role: "individual" | "organization" | null;
   otp: string;
   generatedTime: number;
+  createdAt: Date;
 }
 
 const userOTPSchema = new Schema<IUserOTP>({
@@ -47,6 +48,10 @@ const userOTPSchema = new Schema<IUserOTP>({
   generatedTime: {
     type: Number,
     required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
     expires: 300,
   },
 });
