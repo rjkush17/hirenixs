@@ -4,10 +4,7 @@ import { User, IUser } from "@/models/user";
 import bcrypt from "bcryptjs";
 
 const credentialsprovider = CredentialsProvider({
-    // name
     name: "Credentials",
-    // TODO: Upgrade this to OTP login to
-    // credentials details that
     credentials: {
         identifier: {
             type: "string",
