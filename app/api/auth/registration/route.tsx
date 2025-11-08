@@ -4,8 +4,8 @@ import { UserOTP, IUserOTP } from "@/models/userotp";
 import connectDB from "@/database/Database";
 import bcrypt from "bcryptjs";
 import genrateOTP from "@/utils/generateOTP";
-import { otpMail } from "@/utils/mail/registrationOTPMail";
 import sendMail from "@/lib/nodemailer/sendMail";
+import { registrationOTP } from "@/utils/mail/registrationOTP";
 import type { mailDetailsType } from "@/lib/nodemailer/sendMail";
 
 interface ReqData {
@@ -67,7 +67,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     const OTPgeneratedTime = Date.now();
 
     // mail otp and body data
-    const htmlBody: string = otpMail(Userotp);
+    const htmlBody: string = registrationOTP(name, Userotp);
     const mailData: mailDetailsType = {
       from: "Hirenixs",
       to: email,
@@ -82,7 +82,6 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
       isOPTCreated.otp = Userotp;
       isOPTCreated.generatedTime = OTPgeneratedTime;
       isOPTCreated.save();
-
       return NextResponse.json({ message: "OTP Resend Done" }, { status: 200 });
     }
 

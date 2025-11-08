@@ -4,6 +4,7 @@ import { User, IUser } from "@/models/user";
 import crypto from "crypto-js";
 import SendMail from "@/lib/nodemailer/sendMail";
 import type { mailDetailsType } from "@/lib/nodemailer/sendMail";
+import { forgotPasswordMail } from "@/utils/mail/forgotpassword";
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
   try {
@@ -37,7 +38,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
       from: "Hirenixs Team",
       to: isRegistered.email,
       subject: "Forgot Passowrd Link",
-      text: url,
+      html: forgotPasswordMail(url),
     };
     const isSendComplete = await SendMail(mailBody);
 

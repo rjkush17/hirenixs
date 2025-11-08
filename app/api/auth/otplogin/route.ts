@@ -5,6 +5,7 @@ import SendMail from "@/lib/nodemailer/sendMail";
 import genrateOTP from "@/utils/generateOTP";
 import { LoginOTP, ILoginOTP } from "@/models/loginotp";
 import type { mailDetailsType } from "@/lib/nodemailer/sendMail";
+import { loginOTP } from "@/utils/mail/loginOTP";
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
     try {
@@ -29,7 +30,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
             from: "Hirenixs Team",
             to: isRegistered.email,
             subject: "login mail OTP ( testing )",
-            text: Userotp,
+            html: loginOTP(isRegistered.name, Userotp),
         };
         const isSendComplete = await SendMail(mailBody);
 
