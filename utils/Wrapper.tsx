@@ -7,7 +7,7 @@ import { ReactNode } from "react";
 
 type ProvidersProps = {
   children: ReactNode;
-  session?: any; // optional session from NextAuth
+  session?: any;
 };
 
 export default function Providers({ children, session }: ProvidersProps) {
@@ -15,7 +15,13 @@ export default function Providers({ children, session }: ProvidersProps) {
     <SessionProvider session={session}>
       <StoreProvider>
         <ThemeProvider>
-          <Toaster richColors position="top-right" duration={5000} />
+          <Toaster
+            richColors
+            position="top-right"
+            duration={5000}
+            expand={false}
+            visibleToasts={7}
+          />
           {children}
         </ThemeProvider>
       </StoreProvider>
