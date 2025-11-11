@@ -135,12 +135,12 @@ const Login = () => {
         setOTPEmail(value.identifier);
         toast.promise(apiCall("/api/auth/otplogin", value), {
             loading: "Requestin OTP",
-            success: (res: any) => {
+            success: (res: Error) => {
                 setOTPSucessScreen(true);
                 startResendTimer(60);
                 return res;
             },
-            error: (err: any) => err.message || "OTP Request Failed",
+            error: (err: Error) => err.message || "OTP Request Failed",
         });
     };
 
@@ -182,12 +182,12 @@ const Login = () => {
             );
         toast.promise(apiCall("/api/auth/otplogin", { identifier: OTPEmail }), {
             loading: "Requestin OTP",
-            success: (res: any) => {
+            success: (res: Error) => {
                 setOTPSucessScreen(true);
                 startResendTimer(60);
                 return res;
             },
-            error: (err: any) => err.message || "OTP Request Failed",
+            error: (err: Error) => err.message || "OTP Request Failed",
         });
     };
 
@@ -212,7 +212,7 @@ const Login = () => {
                         </TabsList>
                         <br />
                         <TabsContent value="credentials">
-                            <Form {...form}>
+                            <Form {...form}>.
                                 <form
                                     onSubmit={form.handleSubmit(onSubmit)}
                                     className="space-y-4"
@@ -231,7 +231,7 @@ const Login = () => {
                                                     href="/auth/register"
                                                     className="text-xs underline"
                                                 >
-                                                    Don't have Account ? Register Now
+                                                    Don&#39;t have Account ? Register Now
                                                 </Link>
                                             </FormItem>
                                         )}
@@ -286,7 +286,7 @@ const Login = () => {
                                                         href="/auth/register"
                                                         className="text-xs underline"
                                                     >
-                                                        Don't have Account ? Register Now
+                                                        Don&apos;t have Account ? Register Now
                                                     </Link>
                                                 </FormItem>
                                             )}

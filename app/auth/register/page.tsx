@@ -106,13 +106,13 @@ const Register = () => {
     const onSubmit = async (value: registerFormSchema) => {
         toast.promise(apiCall("/api/auth/registration", value), {
             loading: "Registering usere...",
-            success: (res: any) => {
+            success: (res: string) => {
                 setShowOTPForm(true);
                 setRegisterData(value);
                 startResendTimer(30);
                 return res;
             },
-            error: (err: any) => err.message || "Registration failed!",
+            error: (err: Error) => err.message || "Registration failed!",
         });
     };
 
@@ -123,14 +123,14 @@ const Register = () => {
         };
         toast.promise(apiCall("/api/auth/verifyregistrationotp", payload), {
             loading: "Validating OTP...",
-            success: (res: any) => {
+            success: (res: string) => {
                 signIn("credentials", {
                     identifier: registerData?.email,
                     password: registerData?.password,
                 });
                 return res || "OTP verified successfully!";
             },
-            error: (err: any) => err.message || "OTP verification failed!",
+            error: (err: Error) => err.message || "OTP verification failed!",
         });
     };
 
@@ -141,10 +141,10 @@ const Register = () => {
             );
         toast.promise(apiCall("/api/auth/registration", registerData), {
             loading: "Requesting for New OTP...",
-            success: (res: any) => {
+            success: (res: string) => {
                 return res || "OTP Validating Done";
             },
-            error: (err: any) => err.message || "Failed to Sent New OTP",
+            error: (err: Error) => err.message || "Failed to Sent New OTP",
         });
     };
 
