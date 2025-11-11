@@ -1,11 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { partialRecord } from "zod";
+import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
 
 export interface OnboardingType {
-    userID: string;
+    userID: string | undefined;
     title?: string;
     bio?: string;
     skills?: string[];
+    role?: string;
     experience?: {
         company: string;
         title: string;
@@ -25,9 +25,8 @@ export interface OnboardingType {
         url: string;
     }[];
 }
-
 const initialState: OnboardingType = {
-    userID: "xzy",
+    userID: undefined,
 };
 
 export const OnboardingSlice = createSlice({
@@ -36,11 +35,14 @@ export const OnboardingSlice = createSlice({
     reducers: {
         updateState: (state, action: PayloadAction<Partial<OnboardingType>>) => {
             Object.assign(state, action.payload);
-            console.log("new state is => ", state);
+            console.log("new state is => ", current(state));
             return state;
+        },
+        setUserID: (state, action: PayloadAction<string>) => {
+            state.userID = action.payload;
         },
     },
 });
 
-export const { updateState} = OnboardingSlice.actions;
+export const { updateState } = OnboardingSlice.actions;
 export default OnboardingSlice.reducer;
