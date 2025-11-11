@@ -15,17 +15,17 @@ export default function SelectRole() {
 
     const roles = [
         {
-            id: "organization",
-            title: "Organization",
-            desc: "Companies and recruiters looking to hire new talent",
-            icon: <Building2 className="w-5 h-5 text-muted-foreground" />,
-        },
-        {
             id: "individual",
             title: "Individual",
             desc: "Single persons searching and applying for jobs",
             icon: <User className="w-5 h-5 text-muted-foreground" />,
         },
+        {
+            id: "organization",
+            title: "Organization",
+            desc: "Companies and recruiters looking to hire new talent",
+            icon: <Building2 className="w-5 h-5 text-muted-foreground" />,
+        }
     ];
 
     const onSubmit = () => {

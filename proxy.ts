@@ -30,7 +30,7 @@ export async function proxy(request: NextRequest) {
         new URL(`/onboarding/${role}/profile`, request.url),
       );
     } else {
-      return NextResponse.redirect(new URL("/onboarding/"));
+      return NextResponse.redirect(new URL("/onboarding",request.url));
     }
   }
 
