@@ -30,7 +30,7 @@ export default function SelectRole() {
 
     const onSubmit = () => {
         dispatch(updateState({ role: selected }))
-        router.push(`/onboarding/${selected}/profile`)
+        router.push(`/onboarding/profile`)
     }
 
     return (

@@ -3,13 +3,15 @@ import { auth } from "@/auth";
 
 export default async function Home() {
     const session = await auth();
-    console.log("session toke in home page ", session)
+    console.log("session toke in home page ", session);
 
     if (!session?.user)
         return (
             <>
                 <div className="mt-16 text-center">
-                    <h3 className="text-lg">You have&apos;nt Login yet Please Login First</h3>
+                    <h3 className="text-lg">
+                        You have&apos;nt Login yet Please Login First
+                    </h3>
                     <Link href="/auth/login">Click here for Logins</Link>
                     <br />
                     <Link href="/auth/register">Create an account</Link>

@@ -22,7 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }),
 
         CredentialsProvider,
-        OTPProvider
+        OTPProvider,
     ],
     pages: {
         signIn: "/auth/login",
@@ -71,17 +71,36 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
         },
 
-        async jwt({ token, user }: { token: JWT, user: UserType }) {
+        async jwt({ token, user, trigger }) {
+            // ------------------------------
+            // 1️⃣ If user just signed in
+            // ------------------------------
             if (user && user.email) {
-                const userDetails: IUser | null = await User.findOne({
-                    email: user.email,
-                });
+                const userDetails = await User.findOne({ email: user.email });
 
-                if (!userDetails) {
-                    console.error("User not found while creating JWT token");
-                    return token;
-                }
+                if (!userDetails) return token;
 
+                // Fill token with all fields
+                token.name = userDetails.name;
+                token.avatar = userDetails.avatar;
+                token.username = userDetails.username;
+                token.role = userDetails.role;
+                token.onboardingVerified = userDetails.onboardingVerified;
+                token.providerName = userDetails.providerName;
+
+                return token;
+            }
+
+            // ------------------------------
+            // 2️⃣ If update() is called → refresh FULL TOKEN
+            // ------------------------------
+            if (trigger === "update") {
+                // 🔥 Get fresh user from DB using token.email
+                const userDetails = await User.findOne({ email: token.email });
+
+                if (!userDetails) return token;
+
+                // 🔥 Replace entire token with DB data
                 token.name = userDetails.name;
                 token.avatar = userDetails.avatar;
                 token.username = userDetails.username;
@@ -89,10 +108,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.onboardingVerified = userDetails.onboardingVerified;
                 token.providerName = userDetails.providerName;
             }
+
             return token;
         },
-
-        async session({ session, token }: { session: Session, token: any }) {
+        async session({ session, token }: { session: Session; token: any }) {
             session.user.name = token.name;
             session.user.avatar = token.avatar;
             session.user.username = token.username;
