@@ -6,8 +6,6 @@ import OTPProvider from "@/lib/auth/otpProvider";
 import connectDB from "./database/Database";
 import { IUser, User } from "@/models/user";
 import createUsername from "@/utils/generateUsername";
-import { JWT } from "next-auth/jwt";
-import { User as UserType, Session } from "next-auth";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [

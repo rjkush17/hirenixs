@@ -13,12 +13,18 @@ export interface OnboardingType {
         startDate: Date;
         endDate: Date;
     }[];
-    education?: {
+    education: {
         institute: string;
         course: string;
-        startDate: Date;
-        endDate: Date;
-        description: string;
+        startDate: {
+            month: number;
+            year: number;
+        };
+        endDate: {
+            month: number;
+            year: number;
+        };
+        description?: string;
     }[];
     social?: {
         platform: string;
@@ -27,6 +33,7 @@ export interface OnboardingType {
 }
 const initialState: OnboardingType = {
     userID: undefined,
+    education: [],
 };
 
 export const OnboardingSlice = createSlice({
@@ -38,11 +45,21 @@ export const OnboardingSlice = createSlice({
             console.log("new state is => ", current(state));
             return state;
         },
+        addEducation: (
+            state,
+            action: PayloadAction<OnboardingType["education"][number]>,
+        ) => {
+            state.education?.push(action.payload);
+            console.log("new state is => ", current(state));
+        },
+        removeEducation: (state, action: PayloadAction<number>) => {
+            state.education = state.education.filter((_, i) => i !== action.payload);
+        },
         setUserID: (state, action: PayloadAction<string>) => {
             state.userID = action.payload;
         },
     },
 });
 
-export const { updateState } = OnboardingSlice.actions;
+export const { updateState, addEducation, setUserID, removeEducation } = OnboardingSlice.actions;
 export default OnboardingSlice.reducer;

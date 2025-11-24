@@ -14,6 +14,7 @@ export default function Page() {
     const { data: session, update } = useSession();
     const [profileLink, setProfileLink] = useState<string | null>(null);
     const { apiCall } = usePost();
+    const [showBtn, setShowBtn] = useState<boolean>(true);
 
     useEffect(() => {
         if (session?.user?.avatar) {
@@ -35,11 +36,13 @@ export default function Page() {
         formData.append("userID", session.user.id || "");
         formData.append("email", session.user.email || "");
 
+        setShowBtn(false);
         toast.promise(apiCall("/api/profile/upload", formData), {
             loading: "Uploading image...",
             success: async (res: any) => {
                 if (res?.url) setProfileLink(res.url);
                 update({});
+                setShowBtn(true);
                 return res?.message || "Upload successful!";
             },
             error: (err: any) => err?.message || "Upload failed",
@@ -47,7 +50,8 @@ export default function Page() {
     };
 
     const handleNext = () => {
-        router.push("/obboarding/education");
+        setShowBtn(false);
+        router.push("/onboarding/education");
     };
 
     if (!session?.user) {
@@ -55,6 +59,7 @@ export default function Page() {
     }
 
     const handleRemoveProfile = () => {
+        setShowBtn(false);
         toast.promise(
             apiCall("/api/profile/delete", {
                 email: session?.user?.email,
@@ -64,6 +69,7 @@ export default function Page() {
                 loading: "delete profile pic",
                 success: (res) => {
                     update({});
+                    setShowBtn(true)
                     return res?.message;
                 },
                 error: (err: Error) => err?.message || "Error while deleting profiel",
@@ -103,15 +109,21 @@ export default function Page() {
                     />
 
                     <div className="flex justify-evenly w-96 mt-8">
-                        <Button onClick={clickingInput}>Update profile</Button>
+                        <Button onClick={clickingInput} disabled={!showBtn}>
+                            Update profile
+                        </Button>
 
                         {session?.user.avatar?.link ? (
-                            <Button onClick={handleRemoveProfile}>Remove Profile</Button>
+                            <Button onClick={handleRemoveProfile} disabled={!showBtn}>
+                                Remove Profile
+                            </Button>
                         ) : (
                             <Button disabled>Remove Profile</Button>
                         )}
 
-                        <Button onClick={handleNext}>Next / Skip</Button>
+                        <Button onClick={handleNext} disabled={!showBtn}>
+                            Next / Skip
+                        </Button>
                     </div>
                 </CardContent>
             </Card>
