@@ -34,6 +34,7 @@ export interface OnboardingType {
 const initialState: OnboardingType = {
     userID: undefined,
     education: [],
+    skills: [],
 };
 
 export const OnboardingSlice = createSlice({
@@ -58,8 +59,22 @@ export const OnboardingSlice = createSlice({
         setUserID: (state, action: PayloadAction<string>) => {
             state.userID = action.payload;
         },
+        addskills: (state, action: PayloadAction<string>) => {
+            const isIncluded = state.skills?.includes(action.payload);
+            if (!isIncluded) state.skills?.push(action.payload);
+        },
+        removeSkills: (state, action: PayloadAction<number>) => {
+            state.skills = state.skills?.filter((_, i) => i !== action.payload);
+        },
     },
 });
 
-export const { updateState, addEducation, setUserID, removeEducation } = OnboardingSlice.actions;
+export const {
+    updateState,
+    addEducation,
+    setUserID,
+    removeEducation,
+    addskills,
+    removeSkills,
+} = OnboardingSlice.actions;
 export default OnboardingSlice.reducer;

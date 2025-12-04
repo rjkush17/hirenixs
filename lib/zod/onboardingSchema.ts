@@ -36,7 +36,10 @@ export const EducationSchema = z
             year: z
                 .number()
                 .min(MIN_YEAR, `You cannot select a year before ${MIN_YEAR}`)
-                .max(FUTURE_YEAR_LIMIT, `You cannot select a future year beyond ${FUTURE_YEAR_LIMIT}`),
+                .max(
+                    FUTURE_YEAR_LIMIT,
+                    `You cannot select a future year beyond ${FUTURE_YEAR_LIMIT}`,
+                ),
         }),
         description: z
             .string()
@@ -74,3 +77,11 @@ export const EducationSchema = z
     });
 
 export type EducationSchemaType = z.infer<typeof EducationSchema>;
+
+export const SkillsSchema = z.object({
+    skills: z
+        .string()
+        .trim()
+        .min(2, "Please enter skill name more then 2 letter"),
+});
+export type SkillsSchemaType = z.infer<typeof SkillsSchema>;
