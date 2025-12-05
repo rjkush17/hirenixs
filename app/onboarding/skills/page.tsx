@@ -29,7 +29,7 @@ export default function Page() {
 
     // ----------------- SUBMIT -----------------
     const onSubmit = (data: SkillsSchemaType) => {
-        const arrayOfSkills: string[] = data.skills.split(" ");
+        const arrayOfSkills: string[] = data.skills.split(",");
 
         arrayOfSkills.forEach((value: string) => {
             const finalValue =
