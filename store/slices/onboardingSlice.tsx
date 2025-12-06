@@ -6,7 +6,7 @@ export interface OnboardingType {
     bio?: string;
     skills?: string[];
     role?: string;
-    experience?: {
+    experience: {
         company: string;
         title: string;
         description: string;
@@ -35,6 +35,7 @@ const initialState: OnboardingType = {
     userID: undefined,
     education: [],
     skills: [],
+    experience: [],
 };
 
 export const OnboardingSlice = createSlice({
@@ -54,6 +55,16 @@ export const OnboardingSlice = createSlice({
             console.log("new state is => ", current(state));
         },
         removeEducation: (state, action: PayloadAction<number>) => {
+            state.education = state.education.filter((_, i) => i !== action.payload);
+        },
+        addExperience: (
+            state,
+            action: PayloadAction<OnboardingType["experience"][number]>,
+        ) => {
+            state.experience?.push(action.payload);
+            console.log("new state is => ", current(state));
+        },
+        removeExperience: (state, action: PayloadAction<number>) => {
             state.education = state.education.filter((_, i) => i !== action.payload);
         },
         setUserID: (state, action: PayloadAction<string>) => {
@@ -76,5 +87,7 @@ export const {
     removeEducation,
     addskills,
     removeSkills,
+    addExperience,
+    removeExperience,
 } = OnboardingSlice.actions;
 export default OnboardingSlice.reducer;
