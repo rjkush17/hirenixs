@@ -9,9 +9,15 @@ export interface OnboardingType {
     experience: {
         company: string;
         title: string;
-        description: string;
-        startDate: Date;
-        endDate: Date;
+        description?: string;
+        startDate: {
+            month: number;
+            year: number;
+        };
+        endDate: {
+            month: number;
+            year: number;
+        };
     }[];
     education: {
         institute: string;
@@ -65,7 +71,9 @@ export const OnboardingSlice = createSlice({
             console.log("new state is => ", current(state));
         },
         removeExperience: (state, action: PayloadAction<number>) => {
-            state.education = state.education.filter((_, i) => i !== action.payload);
+            state.experience = state.experience.filter(
+                (_, i) => i !== action.payload,
+            );
         },
         setUserID: (state, action: PayloadAction<string>) => {
             state.userID = action.payload;
