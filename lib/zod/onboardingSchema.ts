@@ -75,7 +75,6 @@ export const EducationSchema = z
             return;
         }
     });
-
 export type EducationSchemaType = z.infer<typeof EducationSchema>;
 
 export const SkillsSchema = z.object({
@@ -88,76 +87,55 @@ export type SkillsSchemaType = z.infer<typeof SkillsSchema>;
 
 export const ExperienceSchema = z
     .object({
-        company: z
-            .string()
-            .trim()
-            .min(3, "company name must be at least 3 characters")
-            .max(40, "company name must be under 60 characters"),
-
-        title: z
-            .string()
-            .trim()
-            .min(2, "Title name must be at least 2 characters")
-            .max(40, "Title name must be under 40 characters"),
-
+        company: z.string().min(3),
+        title: z.string().min(2),
+        isPresent: z.boolean().optional(),
         startDate: z.object({
-            month: z
-                .number()
-                .min(0, "Month must be between 0 and 11")
-                .max(11, "Month must be between 0 and 11"),
-
-            year: z
-                .number()
-                .min(MIN_YEAR, `You cannot select a year before ${MIN_YEAR}`)
-                .max(MAX_YEAR, "You cannot select a year after current year"),
+            month: z.number().min(0).max(11),
+            year: z.number().min(MIN_YEAR).max(MAX_YEAR),
         }),
+//FIX: in correct date msg not mentioned need to fixed it 
+        endDate: z
+            .object({
+                month: z.number().min(0).max(11),
+                year: z.number().min(MIN_YEAR).max(MAX_YEAR),
+            })
+            .optional(),
 
-        endDate: z.object({
-            month: z
-                .number()
-                .min(0, "Month must be between 0 and 11")
-                .max(11, "Month must be between 0 and 11"),
-
-            year: z
-                .number()
-                .min(MIN_YEAR, `You cannot select a year before ${MIN_YEAR}`)
-                .max(
-                    FUTURE_YEAR_LIMIT,
-                    `You cannot select a future year beyond ${FUTURE_YEAR_LIMIT}`,
-                ),
-        }),
         description: z
             .string()
             .optional()
-            .refine(
-                (v) => !v || v.length >= 15,
-                "Description must be at least 15 characters",
-            )
-            .refine(
-                (v) => !v || v.length <= 300,
-                "Description must be under 300 characters",
-            ),
+            .refine((v) => !v || v.length >= 15, "At least 15 chars")
+            .refine((v) => !v || v.length <= 300, "Under 300 chars"),
     })
-    .superRefine((v, ctx) => {
-        const start = v.startDate;
-        const end = v.endDate;
+    .superRefine((data, ctx) => {
+        const { isPresent, startDate, endDate } = data;
 
-        if (start.year > end.year) {
+        if (!isPresent && !endDate) {
             ctx.addIssue({
                 code: "custom",
-                message: "End Year connot be before start year",
-                path: ["endDate", "year"],
+                path: ["endDate"],
+                message: "End date is required unless currently working.",
             });
             return;
         }
 
-        if (start.year === end.year && start.month >= end.month) {
+        if (isPresent || !endDate) return;
+
+        if (startDate.year > endDate.year) {
             ctx.addIssue({
                 code: "custom",
-                message: "End month must be after start month",
-                path: ["endDate", "month"],
+                path: ["endDate", "year"],
+                message: "End year cannot be before start year.",
             });
-            return;
+        }
+
+        if (startDate.year === endDate.year && startDate.month >= endDate.month) {
+            ctx.addIssue({
+                code: "custom",
+                path: ["endDate", "month"],
+                message: "End month must be after start month.",
+            });
         }
     });
 

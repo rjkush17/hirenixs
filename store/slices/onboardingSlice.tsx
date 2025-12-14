@@ -10,11 +10,12 @@ export interface OnboardingType {
         company: string;
         title: string;
         description?: string;
+        isPresent?:boolean;
         startDate: {
             month: number;
             year: number;
         };
-        endDate: {
+        endDate?: {
             month: number;
             year: number;
         };
