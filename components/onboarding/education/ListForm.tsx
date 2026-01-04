@@ -1,12 +1,7 @@
 "use client";
 import {
     Card,
-    CardAction,
     CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
 } from "@/components/ui/card";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { removeEducation } from "@/store/slices/onboardingSlice";

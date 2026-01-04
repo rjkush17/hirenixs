@@ -10,7 +10,7 @@ export interface OnboardingType {
         company: string;
         title: string;
         description?: string;
-        isPresent?:boolean;
+        isPresent?: boolean;
         startDate: {
             month: number;
             year: number;
@@ -33,7 +33,7 @@ export interface OnboardingType {
         };
         description?: string;
     }[];
-    social?: {
+    social: {
         platform: string;
         url: string;
     }[];
@@ -43,6 +43,7 @@ const initialState: OnboardingType = {
     education: [],
     skills: [],
     experience: [],
+    social: [],
 };
 
 export const OnboardingSlice = createSlice({
@@ -86,6 +87,16 @@ export const OnboardingSlice = createSlice({
         removeSkills: (state, action: PayloadAction<number>) => {
             state.skills = state.skills?.filter((_, i) => i !== action.payload);
         },
+        addSocialLinks: (
+            state,
+            action: PayloadAction<OnboardingType["social"][number]>,
+        ) => {
+            state.social?.push(action.payload);
+            console.log("New state is => ", current(state));
+        },
+        removeSocialLinks: (state, action: PayloadAction<number>) => {
+            state.social = state.social?.filter((_, i) => i !== action.payload);
+        },
     },
 });
 
@@ -98,5 +109,7 @@ export const {
     removeSkills,
     addExperience,
     removeExperience,
+    addSocialLinks,
+    removeSocialLinks,
 } = OnboardingSlice.actions;
 export default OnboardingSlice.reducer;

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import usePost from "@/hooks/usePOST";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import ProfileInput from "@/components/onboarding/profile/Inputs";
 
 export default function Page() {
     const router = useRouter();
@@ -39,13 +40,13 @@ export default function Page() {
         setShowBtn(false);
         toast.promise(apiCall("/api/profile/upload", formData), {
             loading: "Uploading image...",
-            success: async (res: any) => {
+            success: async (res) => {
                 if (res?.url) setProfileLink(res.url);
                 update({});
                 setShowBtn(true);
                 return res?.message || "Upload successful!";
             },
-            error: (err: any) => err?.message || "Upload failed",
+            error: (err) => err?.message || "Upload failed",
         });
     };
 
@@ -69,7 +70,7 @@ export default function Page() {
                 loading: "delete profile pic",
                 success: (res) => {
                     update({});
-                    setShowBtn(true)
+                    setShowBtn(true);
                     return res?.message;
                 },
                 error: (err: Error) => err?.message || "Error while deleting profiel",
@@ -127,6 +128,7 @@ export default function Page() {
                     </div>
                 </CardContent>
             </Card>
+            <ProfileInput />
         </div>
     );
 }

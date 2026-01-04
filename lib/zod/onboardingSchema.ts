@@ -77,14 +77,6 @@ export const EducationSchema = z
     });
 export type EducationSchemaType = z.infer<typeof EducationSchema>;
 
-export const SkillsSchema = z.object({
-    skills: z
-        .string()
-        .trim()
-        .min(2, "Please enter skill name more then 2 letter"),
-});
-export type SkillsSchemaType = z.infer<typeof SkillsSchema>;
-
 export const ExperienceSchema = z
     .object({
         company: z.string().min(3),
@@ -94,7 +86,7 @@ export const ExperienceSchema = z
             month: z.number().min(0).max(11),
             year: z.number().min(MIN_YEAR).max(MAX_YEAR),
         }),
-//FIX: in correct date msg not mentioned need to fixed it 
+        //FIX: in correct date msg not mentioned need to fixed it
         endDate: z
             .object({
                 month: z.number().min(0).max(11),
@@ -138,5 +130,40 @@ export const ExperienceSchema = z
             });
         }
     });
-
 export type ExperienceSchemaType = z.infer<typeof ExperienceSchema>;
+
+export const SkillsSchema = z.object({
+    skills: z
+        .string()
+        .trim()
+        .min(2, "Please enter skill name more then 2 letter"),
+});
+export type SkillsSchemaType = z.infer<typeof SkillsSchema>;
+
+export const SocialLinks = z.object({
+    plateform: z
+        .string()
+        .min(1, "Platform name must complete 1 letter")
+        .max(15, "Platform name connot be complete 15 letter"),
+    url: z
+        .string()
+        .min(4, "Invalid Links")
+        .max(
+            140,
+            "Links size is over please give short links or use link shortner",
+        ),
+});
+export type SocialLinksType = z.infer<typeof SocialLinks>;
+
+export const ProfileSchema = z.object({
+    title: z
+        .string()
+        .min(3, "Profile name should be atlest contain 3 characters")
+        .max(30, "you profile name character limit exceed"),
+    bio: z
+        .string()
+        .optional()
+        .refine((v) => !v || v.length >= 15, "At least 15 chars")
+        .refine((v) => !v || v.length <= 300, "Under 300 chars"),
+});
+export type ProfileSchemaType = z.infer<typeof ProfileSchema>;

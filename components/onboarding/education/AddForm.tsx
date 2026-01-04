@@ -26,7 +26,7 @@ import { FUTURE_YEAR_LIMIT, MAX_YEAR, MIN_YEAR, month } from "@/lib/datetime";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { addEducation } from "@/store/slices/onboardingSlice";
 
-const page = () => {
+const Page = () => {
     const dispatch = useAppDispatch();
 
     const {
@@ -215,4 +215,4 @@ const page = () => {
         </>
     );
 };
-export default page;
+export default Page;
