@@ -34,7 +34,7 @@ export interface OnboardingType {
         description?: string;
     }[];
     social: {
-        platform: string;
+        plateform: string;
         url: string;
     }[];
 }

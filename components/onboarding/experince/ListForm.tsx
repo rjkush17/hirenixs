@@ -27,7 +27,7 @@ export function ExperinceList({ items }: { items: ItemType[] }) {
         dispatch(removeExperience(value));
     };
 
-    //FIX: current when user is present in current compnat it showing endDate : present nedd to fix it and showing better UI
+    //FIX: current when user is present in current compnat it showing endDate : present nedd to fix it and showing better UI.
 
     return (
         <div className="max-w-4xl mx-auto space-y-4">
@@ -64,7 +64,6 @@ export function ExperinceList({ items }: { items: ItemType[] }) {
 
                             <p>
                                 <span className="font-semibold text-gray-700">End:</span>{" "}
-                        
                                 {val.endDate
                                     ? `${month[val.endDate.month]} ${val.endDate.year}`
                                     : "Present"}

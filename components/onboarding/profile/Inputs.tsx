@@ -1,6 +1,6 @@
 "use client";
-import { useAppSelector, useAppDispatch } from "@/hooks/useRedux";
-import { useState } from "react";
+import { useAppDispatch } from "@/hooks/useRedux";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
     Field,
@@ -18,6 +18,7 @@ import { updateState } from "@/store/slices/onboardingSlice";
 
 function Inputs() {
     const dispatch = useAppDispatch();
+    const router = useRouter();
 
     const {
         register,
@@ -33,11 +34,11 @@ function Inputs() {
 
     const onsubmit = (value: ProfileSchemaType) => {
         dispatch(updateState(value));
-        
+        router.push("/onboarding/education");
     };
 
     return (
-        <div className="w-6/12 mx-auto">
+        <div className="mx-auto">
             <form onSubmit={handleSubmit(onsubmit)}>
                 <FieldGroup>
                     <FieldSet>
@@ -66,8 +67,20 @@ function Inputs() {
                             <FieldError>{errors.bio?.message}</FieldError>
                         </Field>
                     </FieldSet>
-                    <Button type="submit">Submit</Button>
+                    <div className="flex justify-between w-full gap-4">
+                        <Button type="submit" className="flex-1">
+                            Submit
+                        </Button>
+                        <Button
+                            type="button"
+                            className="flex-1"
+                            onClick={() => router.push("/onboarding/education")}
+                        >
+                            Skip
+                        </Button>
+                    </div>
                 </FieldGroup>
+                
             </form>
         </div>
     );

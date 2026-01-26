@@ -147,10 +147,12 @@ export const SocialLinks = z.object({
         .max(15, "Platform name connot be complete 15 letter"),
     url: z
         .string()
+        .url("Invalid Links")
         .min(4, "Invalid Links")
-        .max(
-            140,
-            "Links size is over please give short links or use link shortner",
+        .max(140, "Links size is over please give short links or use link shortner")
+        .refine(
+            (v) => v.startsWith("https://"),
+            "linked show be start with https://",
         ),
 });
 export type SocialLinksType = z.infer<typeof SocialLinks>;

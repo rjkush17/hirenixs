@@ -25,9 +25,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FUTURE_YEAR_LIMIT, MAX_YEAR, MIN_YEAR, month } from "@/lib/datetime";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { addEducation } from "@/store/slices/onboardingSlice";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
     const dispatch = useAppDispatch();
+    const router = useRouter();
 
     const {
         register,
@@ -58,7 +60,7 @@ const Page = () => {
     };
     return (
         <>
-            <main className="w-8/12 mx-auto mt-4">
+            <main className="w-full mx-auto mt-4">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FieldSet>
                         <FieldGroup className="gap-4">
@@ -206,8 +208,18 @@ const Page = () => {
                                 <FieldError>{errors?.description?.message}</FieldError>
                             </Field>
 
-                            {/* SUBMIT BUTTON */}
-                            <Button type="submit">Submit</Button>
+                            <div className="flex w-full mx-auto gap-2 justify-evenly mt-4">
+                                <Button className="flex-1" type="submit">
+                                    Add Education
+                                </Button>
+                                <Button
+                                    className="flex-1"
+                                    type="button"
+                                    onClick={() => router.push("/onboarding/skills")}
+                                >
+                                   Next Step / Skip
+                                </Button>
+                            </div>
                         </FieldGroup>
                     </FieldSet>
                 </form>

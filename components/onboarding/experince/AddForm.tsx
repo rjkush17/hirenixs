@@ -235,7 +235,7 @@ const ExperiencePage = () => {
                         </Field>
 
                         {/* SUBMIT */}
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit">Add Education</Button>
                     </FieldGroup>
                 </FieldSet>
             </form>
