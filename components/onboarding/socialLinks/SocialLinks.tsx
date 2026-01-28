@@ -1,10 +1,10 @@
-"use client"
+"use client";
 import {
-    Field,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
-    FieldSet,
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { SocialLinks, SocialLinksType } from "@/lib/zod/onboardingSchema";
@@ -13,93 +13,107 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import {
-    removeSocialLinks,
-    addSocialLinks,
-    OnboardingType
+  removeSocialLinks,
+  addSocialLinks,
+  OnboardingType,
 } from "@/store/slices/onboardingSlice";
+import { Icon, Trash } from "lucide-react";
+import { FieldDescription } from "@/components/ui/field";
 
 function SocialLink() {
-    const dispatch = useAppDispatch();
-    const socialLinksData = useAppSelector((state) => state.onboarding.social);
-    const  finalData = useAppSelector((state)=> state.onboarding)
+  const dispatch = useAppDispatch();
+  const socialLinksData = useAppSelector((state) => state.onboarding.social);
+  const finalData = useAppSelector((state) => state.onboarding);
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-    } = useForm<SocialLinksType>({
-        resolver: zodResolver(SocialLinks),
-        defaultValues: {
-            plateform: "",
-            url: "",
-        },
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<SocialLinksType>({
+    resolver: zodResolver(SocialLinks),
+    defaultValues: {
+      plateform: "",
+      url: "",
+    },
+  });
 
-    const onSubmit = (value: SocialLinksType) => {
-        dispatch(addSocialLinks(value));
-        reset();
-    };
+  const onSubmit = (value: SocialLinksType) => {
+    dispatch(addSocialLinks(value));
+    reset();
+  };
 
-    const handleDelete = (value: number) => {
-        dispatch(removeSocialLinks(value));
-    };
-    
-    const handleFinalSubmit = () => {
-      console.log(finalData)
-    }
-    return (
-        <>
-            <div className="w-6/12 mx-auto">
-                {socialLinksData &&
-                    socialLinksData.length !== 0 &&
-                    socialLinksData.map((val, ind) => (
-                        <div key={ind}>
-                            <p>{val.url}</p>
-                            <p>{val.plateform}</p>
-                            <button onClick={() => handleDelete(ind)}>Buttons</button>
-                        </div>
-                    ))}
+  const handleDelete = (value: number) => {
+    dispatch(removeSocialLinks(value));
+  };
 
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <FieldSet>
-                        <FieldGroup>
-                            <Field>
-                                <FieldLabel>Plateform Name</FieldLabel>
-                                <Input
-                                    id="plateform"
-                                    type="text"
-                                    placeholder="Please Enter Platefomr Name"
-                                    {...register("plateform", {
-                                        required: "Plateform is Required",
-                                    })}
-                                />
-
-                                <FieldError>{errors.plateform?.message}</FieldError>
-                            </Field>
-                            <Field>
-                                <FieldLabel>Profile Links</FieldLabel>
-                                <Input
-                                    id="url"
-                                    type="text"
-                                    placeholder="Please Enter Links of proflile"
-                                    {...register("url", {
-                                        required: "Links is Required",
-                                    })}
-                                />
-                                <FieldError>{errors.url?.message}</FieldError>
-                            </Field>
-                            <div className="flex flex-col w-8/12 mx-auto gap-4">
-
-                            <Button type="submit" className="flex-1">Add Platefrom</Button>
-                            <Button className="flex-1" type="button" onClick={handleFinalSubmit}>Complete profile</Button>
-                            </div>
-                        </FieldGroup>
-                    </FieldSet>
-                </form>
+  const handleFinalSubmit = () => {
+    console.log(finalData);
+  };
+  return (
+    <>
+      <div className="w-6/12 mx-auto text-center">
+        <h1 className="text-3xl">Add Your Social Links</h1>
+        <FieldDescription className="my-4 text-lg">Help recruiters and collaborators know you better by sharing your professional profiles.</FieldDescription>
+        {socialLinksData &&
+          socialLinksData.length !== 0 &&
+          socialLinksData.map((val, ind) => (
+            <div key={ind} className="mb-4">
+              <div className="flex justify-between">
+                <p className="mx-2">{val.plateform}</p>
+                <Button variant="outline"  className="m-1" onClick={() => handleDelete(ind)}>
+                  <Trash className="text-red-400"/>
+                </Button>
+              </div>
+              <Input value={val.url} disabled />
             </div>
-        </>
-    );
+          ))}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FieldSet>
+            <FieldGroup>
+              <Field>
+                <FieldLabel>Plateform Name</FieldLabel>
+                <Input
+                  id="plateform"
+                  type="text"
+                  placeholder="Please Enter Platefomr Name"
+                  {...register("plateform", {
+                    required: "Plateform is Required",
+                  })}
+                />
+
+                <FieldError>{errors.plateform?.message}</FieldError>
+              </Field>
+              <Field>
+                <FieldLabel>Profile Links</FieldLabel>
+                <Input
+                  id="url"
+                  type="text"
+                  placeholder="Please Enter Links of proflile"
+                  {...register("url", {
+                    required: "Links is Required",
+                  })}
+                />
+                <FieldError>{errors.url?.message}</FieldError>
+              </Field>
+              <div className="flex flex-col w-8/12 mx-auto gap-4">
+                <Button type="submit" className="flex-1">
+                  Add Platefrom
+                </Button>
+                <Button
+                  className="flex-1"
+                  type="button"
+                  onClick={handleFinalSubmit}
+                >
+                  Complete profile
+                </Button>
+              </div>
+            </FieldGroup>
+          </FieldSet>
+        </form>
+      </div>
+    </>
+  );
 }
 
 export default SocialLink;
