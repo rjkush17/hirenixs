@@ -1,4 +1,5 @@
 "use client";
+import StepperUI from "@/components/onboarding/stepperUI";
 import { useForm } from "react-hook-form";
 import { SkillsSchema, SkillsSchemaType } from "@/lib/zod/onboardingSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,6 +42,7 @@ export default function Page() {
 
   return (
     <div className="p-4 mt-8 max-w-xl mx-auto text-center">
+            <StepperUI current={3} total={4}/>
       <p className="text-3xl font-extrabold mt-8">What skills do you have?</p>
       <p className="text-ring my-4">
         Tell us what skills you have. Add multiple skills by separating them
