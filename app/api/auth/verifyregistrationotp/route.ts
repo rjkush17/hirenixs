@@ -44,7 +44,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
             password: pinExist.password,
             username: pinExist.username,
             role: pinExist.role,
-            onboardingVerified: true,
+            onboardingVerified: false,
             providerName: "Credential",
             providerID: "OPTVerifiedRegistration",
         };
