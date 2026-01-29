@@ -24,7 +24,7 @@ import {
 } from "@/lib/zod/onboardingSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { FUTURE_YEAR_LIMIT, MAX_YEAR, MIN_YEAR, month } from "@/lib/datetime";
+import { MAX_YEAR, MIN_YEAR, month } from "@/lib/datetime";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { addExperience } from "@/store/slices/onboardingSlice";
 import { Button } from "@/components/ui/button";

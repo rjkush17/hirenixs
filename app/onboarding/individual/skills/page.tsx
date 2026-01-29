@@ -88,7 +88,7 @@ export default function Page() {
         <div className="mt-6 flex gap-4 justify-evenly">
           <Button
             type="button"
-            onClick={() => router.push("/onboarding/sociallinks")}
+            onClick={() => router.push("/onboarding/individual/sociallinks")}
             className="w-3/12"
           >
             Next Step / Skip

@@ -215,7 +215,7 @@ const Page = () => {
                                 <Button
                                     className="flex-1"
                                     type="button"
-                                    onClick={() => router.push("/onboarding/skills")}
+                                    onClick={() => router.push("/onboarding/individual/experince")}
                                 >
                                    Next Step / Skip
                                 </Button>

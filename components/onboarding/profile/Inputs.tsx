@@ -34,7 +34,7 @@ function Inputs() {
 
     const onsubmit = (value: ProfileSchemaType) => {
         dispatch(updateState(value));
-        router.push("/onboarding/education");
+        router.push("/onboarding/individual/education");
     };
 
     return (
@@ -74,7 +74,7 @@ function Inputs() {
                         <Button
                             type="button"
                             className="flex-1"
-                            onClick={() => router.push("/onboarding/education")}
+                            onClick={() => router.push("/onboarding/individual/education")}
                         >
                             Skip
                         </Button>
