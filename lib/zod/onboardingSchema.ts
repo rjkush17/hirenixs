@@ -45,8 +45,8 @@ export const EducationSchema = z
             .string()
             .optional()
             .refine(
-                (v) => !v || v.length >= 15,
-                "Description must be at least 15 characters",
+                (v) => !v || v.length >= 1,
+                "Description must be at least 1 characters",
             )
             .refine(
                 (v) => !v || v.length <= 300,
@@ -169,3 +169,25 @@ export const ProfileSchema = z.object({
         .refine((v) => !v || v.length <= 300, "Under 300 chars"),
 });
 export type ProfileSchemaType = z.infer<typeof ProfileSchema>;
+
+export const OrganizationSchema = z.object({
+    name: z.string().trim().min(3).max(30),
+
+    description: z.string().trim().min(1).max(300).optional(),
+
+    location: z.object({
+        state: z.string().min(1),
+        city: z.string().min(1),
+    }),
+    industry_type: z.string().trim().min(2).max(15),
+
+    website: z
+        .string()
+        .url("Invalid URL")
+        .startsWith("https://", "Must start with https://")
+        .max(140)
+        .optional(),
+    employee: z.enum(["0-10", "11-50", "51-100", "101-500", "501-2000", "2000+"]),
+});
+
+export type OrganizationSchemaType = z.infer<typeof OrganizationSchema>;
