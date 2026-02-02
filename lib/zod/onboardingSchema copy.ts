@@ -195,30 +195,10 @@ export const OrganizationSchema = z.object({
 
     website: z
         .string()
-        .optional()
-        .refine(
-            (val) => {
-                if (!val) return true; // allow undefined / empty
-
-                // max length
-                if (val.length > 140) return false;
-
-                // must start with https://
-                if (!val.startsWith("https://")) return false;
-
-                // valid URL check
-                try {
-                    new URL(val);
-                    return true;
-                } catch {
-                    return false;
-                }
-            },
-            {
-                message:
-                    "Website must be a valid https URL and not exceed 140 characters.",
-            },
-        ),
+        .url("Please enter a valid website URL.")
+        .startsWith("https://", "Website URL must start with https://")
+        .max(140, "Website URL cannot exceed 140 characters.")
+        .optional(),
 
     employee: z.enum(["0-10", "11-50", "51-100", "101-500", "501-2000", "2000+"]),
 });

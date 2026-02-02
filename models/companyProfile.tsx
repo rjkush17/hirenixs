@@ -1,53 +1,62 @@
-import mongoose, { Schema, Types, Document } from "mongoose";
+import mongoose, { Schema, Types, Model, Document } from "mongoose";
 
 export interface ICompanyProfile extends Document {
-  userID: Types.ObjectId;
-  industry_type: string;
-  peoples: Types.ObjectId[];
-  location: string;
-  website?: string;
-  follows: number;
-  createdAt: Date;
-  updatedAt: Date;
+    userID: Types.ObjectId;
+    industry_type: string;
+    description: string;
+    location: {
+        city: string;
+        state: string;
+    };
+    website?: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const companyProfileSchema = new Schema<ICompanyProfile>(
-  {
-    userID: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    {
+        userID: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        description: {
+            type: String,
+            trim: true,
+            min: 1,
+            max: 500,
+        },
+        industry_type: {
+            type: String,
+            required: true,
+            trim: true,
+            min: 1,
+            max: 60,
+        },
+        location: {
+            city: {
+                type: String,
+                trim: true,
+                min: 1,
+                max: 25,
+            },
+
+            state: {
+                type: String,
+                trim: true,
+                min: 1,
+                max: 25,
+            },
+        },
+        website: {
+            type: String,
+            trim: true,
+            match: [/^https?:\/\/.+$/, "Invalid website URL format"],
+        },
     },
-    industry_type: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    peoples: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    location: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    website: {
-      type: String,
-      trim: true,
-      match: [/^https?:\/\/.+$/, "Invalid website URL format"],
-    },
-    follows: {
-      type: Number,
-      default: 0,
-    },
-  },
-  { timestamps: true }
+    { timestamps: true },
 );
 
-export const CompanyProfile = mongoose.model<ICompanyProfile>(
-  "CompanyProfile",
-  companyProfileSchema
-);
+export const CompanyProfile: Model<ICompanyProfile> =
+    mongoose.models?.CompanyProfile ||
+    mongoose.model<ICompanyProfile>("CompanyProfile", companyProfileSchema);
