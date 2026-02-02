@@ -29,8 +29,18 @@ import {
     OrganizationSchemaType,
 } from "@/lib/zod/onboardingSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import ProfileImage from "@/components/onboarding/profileImage/ProfileImage";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import usePOST from "@/hooks/usePOST";
+import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 function Page() {
+    const { data: session } = useSession();
+    const router = useRouter();
+    const { apiCall, isLoading } = usePOST();
+
     const EMPLOYEE_RANGES = [
         "0-10",
         "11-50",
@@ -44,6 +54,7 @@ function Page() {
         register,
         handleSubmit,
         control,
+        reset,
         formState: { errors },
     } = useForm<OrganizationSchemaType>({
         resolver: zodResolver(OrganizationSchema),
@@ -61,7 +72,22 @@ function Page() {
     });
 
     const onSubmit = (value: OrganizationSchemaType): void => {
-        console.log("value of onSubmit", value);
+        const payload = {
+            email: session?.user?.email,
+            data: value,
+        };
+        console.log("value of onSubmit", payload);
+        toast.promise(apiCall("/api/onboarding/organization", payload), {
+            loading: "Sending Data",
+            success: (res) => {
+                reset();
+                router.push("/");
+                return res;
+            },
+            error: (err) => err?.message,
+        });
+
+       // reset();
     };
 
     return (
@@ -75,6 +101,7 @@ function Page() {
                         up your workspace properly.
                     </CardDescription>
                 </CardHeader>
+                <ProfileImage />
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <FieldGroup>
@@ -92,8 +119,7 @@ function Page() {
                                 <FieldLabel htmlFor="description">Description</FieldLabel>
                                 <Textarea
                                     id="description"
-                                    placeholder="Description and details about your organizaion"
-                                    typeof="text"
+                                    placeholder="Description and details about your organization"
                                     {...register("description", {
                                         required: "This Field is Required",
                                     })}
@@ -106,7 +132,7 @@ function Page() {
                                 </FieldLabel>
                                 <Input
                                     id="industry_type"
-                                    typeof="text"
+                                    type="text"
                                     placeholder="Please Enter Organization"
                                     {...register("industry_type", {
                                         required: "This Field is Required",
@@ -120,9 +146,7 @@ function Page() {
                                     id="website"
                                     type="text"
                                     placeholder="Please Enter Website Link"
-                                    {...register("website", {
-                                        required: "This Field is Required",
-                                    })}
+                                    {...register("website")}
                                 />
                                 <FieldError>{errors?.website?.message}</FieldError>
                             </Field>
@@ -168,6 +192,7 @@ function Page() {
                                             required: "This Field is Required",
                                         })}
                                     />
+                                    <FieldError>{errors.location?.city?.message}</FieldError>
                                 </Field>
                                 <Field>
                                     <FieldLabel htmlFor="location.state">State</FieldLabel>
@@ -179,13 +204,18 @@ function Page() {
                                             required: "This Field is Required",
                                         })}
                                     />
+                                    <FieldError>{errors.location?.state?.message}</FieldError>
                                 </Field>
                             </div>
-                            <p>{errors.location?.city?.message}</p>
-                            <p>{errors.location?.state?.message}</p>
-                            <Button type="submit" className="w-96 mx-auto">
-                                Submit
-                            </Button>
+                            {isLoading ? (
+                                <Button type="button" className="w-96 mx-auto" disabled>
+                                    <Spinner /> Submitting{" "}
+                                </Button>
+                            ) : (
+                                <Button type="submit" className="w-96 mx-auto">
+                                    Submit
+                                </Button>
+                            )}
                         </FieldGroup>
                     </form>
                 </CardContent>
