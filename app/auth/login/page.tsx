@@ -212,7 +212,7 @@ const Login = () => {
                         </TabsList>
                         <br />
                         <TabsContent value="credentials">
-                            <Form {...form}>.
+                            <Form {...form}>
                                 <form
                                     onSubmit={form.handleSubmit(onSubmit)}
                                     className="space-y-4"
