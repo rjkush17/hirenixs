@@ -73,15 +73,11 @@ export default function ProfileImage() {
     return (
         <div>
             <Card className="bg-background border-none outline-none shadow-none">
-                <CardHeader>
-                    <CardTitle className="text-center text-2xl">
-                        Upload & Showcase Your Profile Card Easily
-                    </CardTitle>
-                </CardHeader>
+                <CardHeader></CardHeader>
 
                 <CardContent className="flex flex-col justify-center items-center">
                     {/* 👉 Profile Image */}
-                    <div className="w-96 h-96 rounded-full overflow-hidden">
+                    <div className="w-56 h-56 rounded-full overflow-hidden">
                         <Image
                             src={profileLink ?? "/defaultProfile/male.jpg"}
                             alt="profile picture"
