@@ -1,11 +1,9 @@
 import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
 
 export interface OnboardingType {
-    userID: string | undefined;
     title?: string;
     bio?: string;
     skills?: string[];
-    role?: string;
     experience: {
         company: string;
         title: string;
@@ -34,12 +32,11 @@ export interface OnboardingType {
         description?: string;
     }[];
     social: {
-        plateform: string;
+        platform: string;
         url: string;
     }[];
 }
 const initialState: OnboardingType = {
-    userID: undefined,
     education: [],
     skills: [],
     experience: [],
@@ -77,9 +74,6 @@ export const OnboardingSlice = createSlice({
                 (_, i) => i !== action.payload,
             );
         },
-        setUserID: (state, action: PayloadAction<string>) => {
-            state.userID = action.payload;
-        },
         addskills: (state, action: PayloadAction<string>) => {
             const isIncluded = state.skills?.includes(action.payload);
             if (!isIncluded) state.skills?.push(action.payload);
@@ -103,7 +97,6 @@ export const OnboardingSlice = createSlice({
 export const {
     updateState,
     addEducation,
-    setUserID,
     removeEducation,
     addskills,
     removeSkills,
