@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { ProfileSchema, ProfileSchemaType } from "@/lib/zod/onboardingSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateState } from "@/store/slices/onboardingSlice";
+import { setStep } from "@/store/slices/onboardinhStepChecker";
 
 function Inputs() {
     const dispatch = useAppDispatch();
@@ -34,6 +35,12 @@ function Inputs() {
 
     const onsubmit = (value: ProfileSchemaType) => {
         dispatch(updateState(value));
+        dispatch(setStep(2));
+        router.push("/onboarding/individual/education");
+    };
+
+    const handleSkip = () => {
+        dispatch(setStep(2));
         router.push("/onboarding/individual/education");
     };
 
@@ -71,16 +78,11 @@ function Inputs() {
                         <Button type="submit" className="flex-1">
                             Submit
                         </Button>
-                        <Button
-                            type="button"
-                            className="flex-1"
-                            onClick={() => router.push("/onboarding/individual/education")}
-                        >
+                        <Button type="button" className="flex-1" onClick={handleSkip}>
                             Skip
                         </Button>
                     </div>
                 </FieldGroup>
-                
             </form>
         </div>
     );

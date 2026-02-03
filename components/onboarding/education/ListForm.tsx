@@ -7,6 +7,7 @@ import { useAppDispatch } from "@/hooks/useRedux";
 import { removeEducation } from "@/store/slices/onboardingSlice";
 import { month } from "@/lib/datetime";
 import { Trash } from "lucide-react";
+import { setStep } from "@/store/slices/onboardinhStepChecker";
 
 interface ItemType {
     institute: string;
@@ -26,7 +27,7 @@ export function EducationList({ items }: { items: ItemType[] }) {
     const dispatch = useAppDispatch();
 
     const handleDelete = (value: number) => {
-        console.log(value);
+        dispatch(setStep(3))
         dispatch(removeEducation(value));
     };
 

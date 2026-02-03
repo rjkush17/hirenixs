@@ -3,9 +3,10 @@ import AddForm from "@/components/onboarding/education/AddForm";
 import ListForm from "@/components/onboarding/education/ListForm";
 import { useAppSelector } from "@/hooks/useRedux";
 import StepperUI from "@/components/onboarding/stepperUI";
-
+import { useOnboardingRedirect } from "@/hooks/useOnboardingRedirect";
 export function Page() {
     const data = useAppSelector((state) => state.onboarding.education);
+    useOnboardingRedirect(2);
 
     return (
         <>

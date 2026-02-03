@@ -26,8 +26,11 @@ import { FUTURE_YEAR_LIMIT, MAX_YEAR, MIN_YEAR, month } from "@/lib/datetime";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { addEducation } from "@/store/slices/onboardingSlice";
 import { useRouter } from "next/navigation";
+import { setStep } from "@/store/slices/onboardinhStepChecker";
+import { useOnboardingRedirect } from "@/hooks/useOnboardingRedirect"; 
 
 const Page = () => {
+    useOnboardingRedirect(2);
     const dispatch = useAppDispatch();
     const router = useRouter();
 
@@ -58,6 +61,12 @@ const Page = () => {
         dispatch(addEducation(value));
         reset();
     };
+
+    const handleSkip = () => {
+        dispatch(setStep(3));
+        router.push("/onboarding/individual/experience");
+    };
+
     return (
         <>
             <main className="w-full mx-auto mt-4">
@@ -212,12 +221,8 @@ const Page = () => {
                                 <Button className="flex-1" type="submit">
                                     Add Education
                                 </Button>
-                                <Button
-                                    className="flex-1"
-                                    type="button"
-                                    onClick={() => router.push("/onboarding/individual/experince")}
-                                >
-                                   Next Step / Skip
+                                <Button className="flex-1" type="button" onClick={handleSkip}>
+                                    Next Step / Skip
                                 </Button>
                             </div>
                         </FieldGroup>
