@@ -5,13 +5,14 @@ export const OrganizationSchema = z
         name: z
             .string()
             .trim()
-            .min(3, "Organization name must be at least 3 characters long.")
-            .max(30, "Organization name cannot exceed 30 characters.")
+            .min(2, "Organization name must be at least 2 characters long.")
+            .max(50, "Organization name cannot exceed 50 characters.")
             .optional(),
 
         description: z
             .string()
             .trim()
+            .max(300)
             .transform((v) => (v === "" ? undefined : v))
             .optional(),
 

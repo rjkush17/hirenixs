@@ -24,32 +24,33 @@ const companyProfileSchema = new Schema<ICompanyProfile>(
             type: String,
             trim: true,
             min: 1,
-            max: 500,
+            max: 300,
         },
         industry_type: {
             type: String,
             required: true,
             trim: true,
             min: 1,
-            max: 60,
+            max: 50,
         },
         location: {
             city: {
                 type: String,
                 trim: true,
                 min: 1,
-                max: 25,
+                max: 50,
             },
 
             state: {
                 type: String,
                 trim: true,
                 min: 1,
-                max: 25,
+                max: 50,
             },
         },
         website: {
             type: String,
+            max: 300,
             trim: true,
             match: [/^https?:\/\/.+$/, "Invalid website URL format"],
         },

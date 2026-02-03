@@ -2,7 +2,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface IMonthYear {
     month: number;
-    year: number; 
+    year: number;
 }
 
 export interface IUserProfile extends Document {
@@ -78,14 +78,14 @@ const userProfileSchema = new Schema<IUserProfile>(
             type: String,
             trim: true,
             minlength: 4,
-            maxlength: 30,
+            maxlength: 50,
         },
 
         bio: {
             type: String,
             trim: true,
-            minlength: 20,
-            maxlength: 250,
+            minlength: 1,
+            maxlength: 300,
         },
 
         skills: {

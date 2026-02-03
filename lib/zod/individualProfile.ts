@@ -2,16 +2,17 @@ import { z } from "zod";
 
 export const OnboardingSchema = z
     .object({
-        title: z.string().trim().min(1).optional(),
+        title: z.string().trim().min(1).max(50).optional(),
         bio: z
             .string()
             .trim()
             .min(1)
+            .max(300)
             .transform((v) => (v === "" ? undefined : v))
             .optional(),
 
         skills: z
-            .array(z.string().trim().min(1))
+            .array(z.string().trim().min(1).max(50))
             .min(0)
             .transform((arr) => (arr.length === 0 ? undefined : arr))
             .optional(),
@@ -19,8 +20,8 @@ export const OnboardingSchema = z
         experience: z
             .array(
                 z.object({
-                    company: z.string().trim().min(1),
-                    title: z.string().trim().min(1),
+                    company: z.string().trim().min(1).max(50),
+                    title: z.string().trim().min(1).max(50),
                     description: z
                         .string()
                         .trim()
@@ -46,8 +47,8 @@ export const OnboardingSchema = z
         education: z
             .array(
                 z.object({
-                    institute: z.string().trim().min(1),
-                    course: z.string().trim().min(1),
+                    institute: z.string().trim().min(1).max(50),
+                    course: z.string().trim().min(1).max(50),
                     startDate: z.object({
                         month: z.number().min(0).max(11),
                         year: z.number(),
@@ -70,7 +71,7 @@ export const OnboardingSchema = z
         social: z
             .array(
                 z.object({
-                    platform: z.string().trim().min(1),
+                    platform: z.string().trim().min(1).max(50),
                     url: z.string().url(),
                 }),
             )

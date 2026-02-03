@@ -6,14 +6,14 @@ export const EducationSchema = z
         institute: z
             .string()
             .trim()
-            .min(3, "Institute name must be at least 3 characters")
-            .max(60, "Institute name must be under 60 characters"),
+            .min(2, "Institute name must be at least 2 characters")
+            .max(50, "Institute name must be under 50 characters"),
 
         course: z
             .string()
             .trim()
             .min(2, "Course name must be at least 2 characters")
-            .max(40, "Course name must be under 40 characters"),
+            .max(50, "Course name must be under 50 characters"),
 
         startDate: z.object({
             month: z
@@ -79,8 +79,8 @@ export type EducationSchemaType = z.infer<typeof EducationSchema>;
 
 export const ExperienceSchema = z
     .object({
-        company: z.string().min(3),
-        title: z.string().min(2),
+        company: z.string().min(3).max(50),
+        title: z.string().min(2).max(50),
         isPresent: z.boolean().optional(),
         startDate: z.object({
             month: z.number().min(0).max(11),
@@ -96,7 +96,7 @@ export const ExperienceSchema = z
         description: z
             .string()
             .optional()
-            .refine((v) => !v || v.length >= 15, "At least 15 chars")
+            .refine((v) => !v || v.length >= 1, "At least 1 chars")
             .refine((v) => !v || v.length <= 300, "Under 300 chars"),
     })
     .superRefine((data, ctx) => {
@@ -135,7 +135,8 @@ export const SkillsSchema = z.object({
     skills: z
         .string()
         .trim()
-        .min(2, "Please enter skill name more then 2 letter"),
+        .min(2, "Please enter skill name more then 2 letter")
+        .max(50, "Please enter skill name under 50 letters"),
 });
 export type SkillsSchemaType = z.infer<typeof SkillsSchema>;
 
@@ -143,12 +144,12 @@ export const SocialLinks = z.object({
     platform: z
         .string()
         .min(1, "Platform name must complete 1 letter")
-        .max(15, "Platform name connot be complete 15 letter"),
+        .max(50, "Platform name connot be complete 50 letter"),
     url: z
         .string()
         .url("Invalid Links")
         .min(4, "Invalid Links")
-        .max(140, "Links size is over please give short links or use link shortner")
+        .max(300, "Links size is over please give short links or use link shortner")
         .refine(
             (v) => v.startsWith("https://"),
             "linked show be start with https://",
@@ -160,11 +161,11 @@ export const ProfileSchema = z.object({
     title: z
         .string()
         .min(3, "Profile name should be atlest contain 3 characters")
-        .max(30, "you profile name character limit exceed"),
+        .max(50, "you profile name character limit exceed"),
     bio: z
         .string()
         .optional()
-        .refine((v) => !v || v.length >= 15, "At least 15 chars")
+        .refine((v) => !v || v.length >= 1, "At least 1 chars")
         .refine((v) => !v || v.length <= 300, "Under 300 chars"),
 });
 export type ProfileSchemaType = z.infer<typeof ProfileSchema>;
@@ -174,7 +175,7 @@ export const OrganizationSchema = z.object({
         .string()
         .trim()
         .min(3, "Organization name must be at least 3 characters long.")
-        .max(30, "Organization name cannot exceed 30 characters."),
+        .max(50, "Organization name cannot exceed 50 characters."),
 
     description: z
         .string()
@@ -183,15 +184,21 @@ export const OrganizationSchema = z.object({
         .optional(),
 
     location: z.object({
-        state: z.string().min(1, "State name is required."),
-        city: z.string().min(1, "City name is required."),
+        state: z
+            .string()
+            .min(1, "State name is required.")
+            .max(50, "city name must be under 50 letters"),
+        city: z
+            .string()
+            .min(1, "City name is required.")
+            .max(50, "city name must be under 50 letters"),
     }),
 
     industry_type: z
         .string()
         .trim()
         .min(2, "Industry type must be at least 2 characters.")
-        .max(15, "Industry type cannot exceed 15 characters."),
+        .max(50, "Industry type cannot exceed 50 characters."),
 
     website: z
         .string()
@@ -201,7 +208,7 @@ export const OrganizationSchema = z.object({
                 if (!val) return true; // allow undefined / empty
 
                 // max length
-                if (val.length > 140) return false;
+                if (val.length > 300) return false;
 
                 // must start with https://
                 if (!val.startsWith("https://")) return false;
@@ -216,7 +223,7 @@ export const OrganizationSchema = z.object({
             },
             {
                 message:
-                    "Website must be a valid https URL and not exceed 140 characters.",
+                    "Website must be a valid https URL and not exceed 300 characters.",
             },
         ),
 
