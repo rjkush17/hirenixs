@@ -1,46 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
+import checkOnboarding from "@/middlewares/onboarding";
 
 export async function proxy(request: NextRequest) {
-  const session = await auth();
-  const { pathname } = request.nextUrl;
+    const session = await auth();
+    const { pathname } = request.nextUrl;
 
-  const publicPaths = ["/auth"];
-  const privatePaths = ["/onboarding", "/dashboard", "/profile"]; // example
+    const publicPaths = ["/auth"];
+    const privatePaths = ["/onboarding", "/dashboard", "/profile"];
 
-  // --- #1 Public Routes: redirect logged-in users away ---
-  if (publicPaths.some((prefix) => pathname.startsWith(prefix))) {
-    if (session) return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  // --- #2 Private Routes: block unauthenticated users ---
-  if (privatePaths.some((prefix) => pathname.startsWith(prefix))) {
-    if (!session) return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  // --- #3 Force onboarding if not completed ---
-  const role = session?.user.role;
-  if (
-    session &&
-    !session.user.onboardingVerified &&
-    !pathname.startsWith("/onboarding")
-  ) {
-    if (role === "individual") {
-      return NextResponse.redirect(new URL(`/onboarding/profile`, request.url));
-    } else if (role === "organization") {
-      return NextResponse.redirect(
-        new URL(`/onboarding/organization`, request.url),
-      );
-    } else {
-      return NextResponse.redirect(
-        new URL("/onboarding/profiletype", request.url),
-      );
+    // #1 Public routes → redirect logged-in users
+    if (publicPaths.some((p) => pathname.startsWith(p))) {
+        if (session) {
+            return NextResponse.redirect(new URL("/", request.url));
+        }
     }
-  }
 
-  return NextResponse.next();
+    // #2 Private routes → block unauthenticated users
+    if (privatePaths.some((p) => pathname.startsWith(p))) {
+        if (!session) {
+            return NextResponse.redirect(new URL("/", request.url));
+        }
+    }
+    // #3 Check onboarding releated  directions
+    if (session) {
+        if (
+            pathname.startsWith("/onboarding") &&
+            session?.user?.onboardingVerified
+        ) {
+            return NextResponse.redirect(new URL("/", request.url));
+        }
+        const onboardingResponse = checkOnboarding(request, session);
+        if (onboardingResponse) return onboardingResponse;
+    }
+
+    return NextResponse.next();
 }
-//FIX: There is not backend API protection need to fixed if after onboarding creation
+
 export const config = {
-  matcher: ["/((?!_next|static|favicon.ico).*)"],
+    matcher: ["/((?!_next|static|api|favicon.ico).*)"],
 };
