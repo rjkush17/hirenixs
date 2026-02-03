@@ -3,7 +3,12 @@ import { z } from "zod";
 export const OnboardingSchema = z
     .object({
         title: z.string().trim().min(1).optional(),
-        bio: z.string().trim().min(1).optional(),
+        bio: z
+            .string()
+            .trim()
+            .min(1)
+            .transform((v) => (v === "" ? undefined : v))
+            .optional(),
 
         skills: z
             .array(z.string().trim().min(1))
