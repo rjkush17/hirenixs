@@ -31,7 +31,7 @@ function SocialLink() {
     const { apiCall, isLoading } = usePOST();
     const router = useRouter();
 
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
     console.log("session token in last pages", session);
 
     const {
@@ -66,6 +66,7 @@ function SocialLink() {
             loading: "Sending data to server..",
             success: (res) => {
                 router.push("/");
+                update({})
                 return res;
             },
             error: (err) => err?.message,

@@ -37,7 +37,7 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 
 function Page() {
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
     const router = useRouter();
     const { apiCall, isLoading } = usePOST();
 
@@ -81,13 +81,14 @@ function Page() {
             loading: "Sending Data",
             success: (res) => {
                 reset();
+                update({});
                 router.push("/");
                 return res;
             },
             error: (err) => err?.message,
         });
 
-       // reset();
+        // reset();
     };
 
     return (
