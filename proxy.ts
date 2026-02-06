@@ -5,9 +5,14 @@ import checkOnboarding from "@/middlewares/onboarding";
 export async function proxy(request: NextRequest) {
     const session = await auth();
     const { pathname } = request.nextUrl;
+    console.log("path is ", pathname);
+
+    if (pathname === "/" && session) {
+        return NextResponse.redirect(new URL("/feed", request.url));
+    }
 
     const publicPaths = ["/auth"];
-    const privatePaths = ["/onboarding", "/dashboard", "/profile"];
+    const privatePaths = ["/onboarding", "/dashboard", "/profile", "/feed"];
 
     // #1 Public routes → redirect logged-in users
     if (publicPaths.some((p) => pathname.startsWith(p))) {

@@ -25,7 +25,7 @@ export const OrganizationSchema = z
             .string()
             .trim()
             .min(2, "Industry type must be at least 2 characters.")
-            .max(15, "Industry type cannot exceed 15 characters."),
+            .max(50, "Industry type cannot exceed 50 characters."),
 
         website: z
             .string()
