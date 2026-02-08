@@ -9,14 +9,15 @@ const nextConfig: NextConfig = {
         // !! WARN !!
         ignoreBuildErrors: true,
     },
-    images:{
-        remotePatterns:[
+    images: {
+        remotePatterns: [
             {
                 protocol: "https",
-                hostname:"res.cloudinary.com"
+                hostname: "res.cloudinary.com",
             },
         ],
     },
+    allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev'],
 };
 
 export default nextConfig;
