@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Nunito_Sans, Playwrite_NL } from "next/font/google";
-import "@/css/global.css";
+import { Poppins,  Inter } from "next/font/google";
+import "@/css/public/global.css";
 
-const nunito = Nunito_Sans({
+const poppins = Poppins({
     subsets: ["latin"],
-    variable: "--font-nunito",
-});
+    weight:["100", "200", "300", "400", "500", "600", "700", "800"],
+    variable: "--font-poppins"
+})
 
-const playwrite = Playwrite_NL({
-    variable: "--font-playwrite",
-});
-
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter"
+})
+  
 export const metadata: Metadata = {
     title: "Hirenixs",
     description: "Web app for searching Jobs and recuiters",
@@ -37,7 +39,7 @@ export default function RootLayout({
                 href="/favicons/apple-touch-icon.png"
             />
             <link rel="manifest" href="/site.webmanifest" />
-            <body className={`${nunito.className} ${playwrite.variable}`}>
+            <body className={`${poppins.variable} ${inter.variable}`}>
                 <main>{children}</main>
             </body>
         </html>
