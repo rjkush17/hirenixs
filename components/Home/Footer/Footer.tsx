@@ -1,5 +1,3 @@
-import { Briefcase } from "lucide-react";
-
 export const Footer = () => {
     return (
         <footer className="border-t border-gray-200 bg-black text-white">

@@ -14,5 +14,5 @@ export function useOnboardingRedirect(requiredStep: number) {
         if (currentStep !== requiredStep) {
             router.replace("/onboarding/individual/profile");
         }
-    }, []);
+    },[router]);
 }

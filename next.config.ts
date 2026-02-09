@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
         // Dangerously allow production builds to successfully complete even if
         // your project has type errors.
         // !! WARN !!
-        ignoreBuildErrors: true,
+        ignoreBuildErrors: false,
     },
     images: {
         remotePatterns: [
@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
             },
         ],
     },
-    allowedDevOrigins: ['192.168.1.24'],
+ //   allowedDevOrigins: ['192.168.1.24'],
 };
 
 export default nextConfig;

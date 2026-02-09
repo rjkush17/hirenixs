@@ -83,7 +83,7 @@ const Register = () => {
         name: "",
     });
 
-    let interval: any;
+    let interval:  NodeJS.Timeout;
     const startResendTimer = (duration: number = 30) => {
         if (interval) clearInterval(interval);
         setResendTimer(duration);
@@ -101,7 +101,7 @@ const Register = () => {
     };
     useEffect(() => {
         return () => clearInterval(interval);
-    }, []);
+    });
 
     const onSubmit = async (value: registerFormSchema) => {
         toast.promise(apiCall("/api/auth/registration", value), {

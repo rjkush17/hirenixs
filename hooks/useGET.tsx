@@ -31,13 +31,13 @@ const useGET = () => {
             setResult(resData);
             setIsError(null);
             return resData.message || "Success";
-        } catch (error: any) {
-            if (error.name === "AbortError") {
+        } catch (error: unknown) {
+            if (error && error?.name === "AbortError") {
                 setIsError("API aborted");
                 throw new Error("API aborted");
             }
             console.error("Error while fetching API:", error);
-            setIsError(error.message || "Unknown error");
+            setIsError(error && error.message || "Unknown error");
             throw error;
         } finally {
             setIsLoading(false);

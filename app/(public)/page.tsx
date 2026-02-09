@@ -7,7 +7,7 @@ import Find from "@/components/Home/Find/Find";
 import Jobs from "@/components/Home/Jobs/Jobs";
 import Footer from "@/components/Home/Footer/Footer";
 
-export default async function Home() {
+export default function Home() {
     return (
         <div className="min-h-screen bg-white">
             <Nav />

@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Building2, User } from "lucide-react";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import usePatch from "@/hooks/usePATCH";
 import { Spinner } from "@/components/ui/spinner";
@@ -14,7 +13,7 @@ export default function SelectRole() {
     const { data: session, update } = useSession();
     const [selected, setSelected] = useState<string>("");
     const router = useRouter();
-    const { isLoading, isError, apiCall } = usePatch();
+    const { isLoading, apiCall } = usePatch();
 
     const roles = [
         {

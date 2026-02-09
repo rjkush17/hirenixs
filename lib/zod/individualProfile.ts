@@ -6,7 +6,6 @@ export const OnboardingSchema = z
         bio: z
             .string()
             .trim()
-            .min(1)
             .max(300)
             .transform((v) => (v === "" ? undefined : v))
             .optional(),

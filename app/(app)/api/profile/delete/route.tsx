@@ -31,8 +31,8 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
             { message: "images Delete sucessfull" },
             { status: 200 },
         );
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.log("error while in images error", error);
         return NextResponse.json({ error: "Internal Server error" });
     }
-};
+}

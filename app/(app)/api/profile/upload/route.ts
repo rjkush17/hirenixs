@@ -17,7 +17,6 @@ export const POST = async (request: NextRequest) => {
             );
         }
 
-        const userID = formData.get("userID");
         const email = formData.get("email");
         const file = formData.get("file");
 

@@ -6,8 +6,11 @@ import OTPProvider from "@/lib/auth/otpProvider";
 import connectDB from "./database/Database";
 import { IUser, User } from "@/models/user";
 import createUsername from "@/utils/generateUsername";
+import { Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    trustHost: true,
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID,
@@ -109,13 +112,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             return token;
         },
-        async session({ session, token }: { session: Session; token: any }) {
-            session.user.name = token.name;
-            session.user.avatar = token.avatar;
-            session.user.username = token.username;
-            session.user.role = token.role;
-            session.user.onboardingVerified = token.onboardingVerified;
-            session.user.providerName = token.providerName;
+        async session({ session, token }: { session: Session; token: JWT }) {
+            session.user.name = token.name ?? undefined;
+            session.user.avatar = token.avatar ?? undefined;
+            session.user.username = token.username ?? undefined;
+            session.user.role = token.role ?? undefined;
+            session.user.onboardingVerified = token.onboardingVerified ?? undefined;
+            session.user.providerName = token.providerName ?? undefined;
             return session;
         },
         async redirect({ url, baseUrl }) {

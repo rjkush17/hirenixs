@@ -1,16 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const usePost = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+const usePost = <TResult = unknown>() => {
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<string | null>(null);
   const [controller, setController] = useState<AbortController>();
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<TResult | null>(null);
 
   const apiCall = async (
     path: string,
-    bodyData: Record<string, any> | FormData,
-  ) => {
+    bodyData: Record<string, unknown> | FormData
+  ): Promise<string> => {
     if (controller) controller.abort();
 
     const newController = new AbortController();
@@ -20,6 +20,7 @@ const usePost = () => {
 
     try {
       const isFormData = bodyData instanceof FormData;
+
       const response = await fetch(path, {
         method: "POST",
         headers: isFormData
@@ -29,25 +30,28 @@ const usePost = () => {
         signal: newController.signal,
       });
 
-      const resData = await response.json();
+      const resData: TResult & { message?: string; error?: string } =
+        await response.json();
 
       if (!response.ok) {
         const errorMsg = resData.error || "Request failed";
         setIsError(errorMsg);
-        throw new Error(errorMsg); // ❗ This will trigger toast.error
+        throw new Error(errorMsg);
       }
 
       setResult(resData);
-      setIsError(null);
-      return resData.message || "Success"; // ✅ return actual message
-    } catch (error: Error) {
-      if (error.name === "AbortError") {
+      return resData.message || "Success";
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
         setIsError("API aborted");
-        throw new Error("API aborted");
+        throw error;
       }
-      console.error("Error while fetching API:", error);
-      setIsError(error.message || "Unknown error");
-      throw error; // ✅ Important for toast.promise to catch
+
+      const message =
+        error instanceof Error ? error.message : "Unknown error";
+
+      setIsError(message);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -55,9 +59,7 @@ const usePost = () => {
 
   useEffect(() => {
     return () => {
-      if (controller) {
-        controller?.abort();
-      }
+      controller?.abort();
     };
   }, [controller]);
 

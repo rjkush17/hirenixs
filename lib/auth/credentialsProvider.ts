@@ -1,14 +1,19 @@
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { User as AuthUser } from "next-auth";
 import connectDB from "@/database/Database";
-import { User, IUser } from "@/models/user";
+import { User } from "@/models/user";
 import bcrypt from "bcryptjs";
+
+export type LoginCredentials = Partial<
+    Record<"identifier" | "password", unknown>
+> | null;
 
 const credentialsprovider = CredentialsProvider({
     name: "Credentials",
     credentials: {
         identifier: {
-            type: "string",
-            label: "Email",
+            type: "text",
+            label: "Email or Username",
             placeholder: "johndoe@gmail.com",
         },
         password: {
@@ -18,31 +23,39 @@ const credentialsprovider = CredentialsProvider({
         },
     },
 
-    // custome loginc function
-    authorize: async (credentials: any) => {
-        try {
-            await connectDB();
+    authorize: async (
+        credentials: LoginCredentials,
+    ): Promise<AuthUser | null> => {
+        if (!credentials) return null;
 
-            const { identifier, password } = credentials;
+        const identifier =
+            typeof credentials.identifier === "string"
+                ? credentials.identifier
+                : undefined;
 
-            const user: IUser | null = await User.findOne({
-                $or: [{ email: identifier }, { username: identifier }],
-            });
-            if (!user) throw new Error("User not found");
-            if (!user || !user.password) throw new Error("Pasword not found");
+        const password =
+            typeof credentials.password === "string"
+                ? credentials.password
+                : undefined;
 
-            const isMatch = await bcrypt.compare(password, user.password);
-            if (!isMatch) return null;
-            const plainUser = user.toObject();
-            delete plainUser.password;
-            delete plainUser.createdAt;
-            delete plainUser.updatedAt;
+        if (!identifier || !password) return null;
 
-            return plainUser;
-        } catch (error) {
-            console.error("Login error:", error);
-            return null;
-        }
+        await connectDB();
+
+        const user = await User.findOne({
+            $or: [{ email: identifier }, { username: identifier }],
+        });
+
+        if (!user || !user.password) return null;
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return null;
+
+        return {
+            id: user._id.toString(),
+            name: user.name,
+            email: user.email,
+        };
     },
 });
 

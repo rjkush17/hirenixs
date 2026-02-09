@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import usePost from "@/hooks/usePOST";

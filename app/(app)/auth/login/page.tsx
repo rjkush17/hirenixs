@@ -84,7 +84,7 @@ const Login = () => {
     const [OTPEmail, setOTPEmail] = useState<string | null>(null);
     const [resendTimer, setResendTimer] = useState<number>(0);
 
-    let interval: any;
+    let interval: ReturnType<typeof setInterval>;
     const startResendTimer = (duration: number = 30) => {
         if (interval) clearInterval(interval);
         setResendTimer(duration);
@@ -102,7 +102,7 @@ const Login = () => {
     };
     useEffect(() => {
         return () => clearInterval(interval);
-    }, []);
+    });
 
     const onSubmit = async (values: LoginFormValues) => {
         toast.promise(

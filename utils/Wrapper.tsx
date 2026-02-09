@@ -4,10 +4,11 @@ import StoreProvider from "@/components/store-provider";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/sonner";
 import { ReactNode } from "react";
+import { Session } from "next-auth";
 
 type ProvidersProps = {
   children: ReactNode;
-  session?: any;
+  session?: Session;
 };
 
 export default function Providers({ children, session }: ProvidersProps) {
