@@ -150,7 +150,7 @@ const Register = () => {
 
     return (
         <div className="w-screen h-full flex justify-center items-center">
-            <Card className="w-[500px] mx-auto mt-10">
+            <Card className="w-125 mx-auto mt-10">
                 <CardHeader>
                     <CardTitle>Create Your Account</CardTitle>
                     <CardDescription>

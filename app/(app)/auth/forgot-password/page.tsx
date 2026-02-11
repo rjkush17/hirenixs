@@ -42,7 +42,7 @@ function Page() {
     const onSubmit = (data: forgotPasswordType) => {
         toast.promise(apiCall("/api/auth/forgotpassword", data), {
             loading: "Generatings reset Link",
-            success: (res: Error) => {
+            success: (res) => {
                 setShowSucessScreen(true);
                 setIdentifer(data.identifier);
                 return res;

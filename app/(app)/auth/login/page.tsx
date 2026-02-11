@@ -135,7 +135,7 @@ const Login = () => {
         setOTPEmail(value.identifier);
         toast.promise(apiCall("/api/auth/otplogin", value), {
             loading: "Requestin OTP",
-            success: (res: Error) => {
+            success: (res: string) => {
                 setOTPSucessScreen(true);
                 startResendTimer(60);
                 return res;
@@ -182,7 +182,7 @@ const Login = () => {
             );
         toast.promise(apiCall("/api/auth/otplogin", { identifier: OTPEmail }), {
             loading: "Requestin OTP",
-            success: (res: Error) => {
+            success: (res: string) => {
                 setOTPSucessScreen(true);
                 startResendTimer(60);
                 return res;

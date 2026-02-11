@@ -15,8 +15,8 @@ export default function ProfileImage() {
     const [showBtn, setShowBtn] = useState<boolean>(true);
 
     useEffect(() => {
-        if (session?.user?.avatar) {
-            setProfileLink(session.user.avatar.link);
+        if (session?.user?.avatar?.link) {
+            setProfileLink(session.user?.avatar?.link);
         }
     }, [session]);
     console.log(session);
@@ -35,16 +35,25 @@ export default function ProfileImage() {
         formData.append("email", session.user.email || "");
 
         setShowBtn(false);
-        toast.promise(apiCall("/api/profile/upload", formData), {
-            loading: "Uploading image...",
-            success: async (res) => {
-                if (res?.url) setProfileLink(res.url);
-                update({});
-                setShowBtn(true);
-                return res?.message || "Upload successful!";
+        toast.promise(
+            fetch("/api/profile/upload", {
+                method: "POST",
+                body: formData,
+            }).then(async (res) => {
+                if (!res.ok) throw new Error("Upload failed");
+                return res.json();
+            }),
+            {
+                loading: "Uploading image...",
+                success: async (res: { url?: string; message?: string }) => {
+                    if (res?.url) setProfileLink(res.url);
+                    update({});
+                    setShowBtn(true);
+                    return res?.message || "Upload successful!";
+                },
+                error: "Upload failed",
             },
-            error: (err) => err?.message || "Upload failed",
-        });
+        );
     };
 
     if (!session?.user) {
@@ -53,17 +62,27 @@ export default function ProfileImage() {
 
     const handleRemoveProfile = () => {
         setShowBtn(false);
+
         toast.promise(
-            apiCall("/api/profile/delete", {
-                email: session?.user?.email,
-                publicID: session?.user?.avatar?.publicID,
+            fetch("/api/profile/delete", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: session?.user?.email,
+                    publicID: session?.user?.avatar?.publicID,
+                }),
+            }).then(async (res) => {
+                if (!res.ok) throw new Error("Delete failed");
+                return res.json();
             }),
             {
                 loading: "delete profile pic",
-                success: (res) => {
+                success: (res: { message?: string }) => {
                     update({});
                     setShowBtn(true);
-                    return res?.message;
+                    return res?.message || "Profile deleted";
                 },
                 error: (err: Error) => err?.message || "Error while deleting profile",
             },

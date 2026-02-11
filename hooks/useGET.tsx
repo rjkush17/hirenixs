@@ -32,12 +32,17 @@ const useGET = () => {
             setIsError(null);
             return resData.message || "Success";
         } catch (error: unknown) {
-            if (error && error?.name === "AbortError") {
+            if (error instanceof Error && error?.name === "AbortError") {
                 setIsError("API aborted");
                 throw new Error("API aborted");
             }
             console.error("Error while fetching API:", error);
-            setIsError(error && error.message || "Unknown error");
+            if (error instanceof Error) {
+                setIsError(error.message);
+            } else {
+                setIsError("Unknown error");
+            }
+
             throw error;
         } finally {
             setIsLoading(false);

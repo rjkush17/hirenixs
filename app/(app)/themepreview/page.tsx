@@ -63,12 +63,6 @@ export default function ThemePreview() {
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>Something went wrong.</AlertDescription>
         </Alert>
-
-        <Alert variant="secondary">
-          <Settings className="h-4 w-4" />
-          <AlertTitle>Info</AlertTitle>
-          <AlertDescription>Check system preferences.</AlertDescription>
-        </Alert>
       </div>
 
       <Separator className="w-full max-w-lg" />

@@ -1,16 +1,20 @@
 // types/next-auth.d.ts
 // Augment NextAuth's types so `session.user.onboardingVerified` is recognized.
 
+
+interface Avatar {
+    link: string;
+    publicID: string;
+}
+
 import { DefaultSession } from "next-auth";
-
-
 
 declare module "next-auth" {
     // Extend the User type with your custom fields
     interface User {
         name?: string;
         email?: string;
-        avatar?: Record<string, unknown>;
+        avatar?: Avatar;
         username?: string;
         role?: string;
         providerName?: string;
@@ -28,15 +32,14 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
     interface JWT {
-        user?: {
-            id?: string;
-            name?: string;
-            email?: string;
-            username?: string;
-            role?: string | null;
-            onboardingVerified?: boolean;
-            providerName?: string;
-            providerID?: string;
-        };
+        id?: string;
+        name?: string;
+        email?: string;
+        avatar?: Avatar;
+        username?: string;
+        role?: string | null;
+        onboardingVerified?: boolean;
+        providerName?: string;
+        providerID?: string;
     }
 }
