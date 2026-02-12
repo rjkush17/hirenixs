@@ -3,6 +3,7 @@ import { Nunito_Sans } from "next/font/google";
 import "@/css/app/global.css";
 import Providers from "@/utils/Wrapper";
 import Sidebar from "@/components/sidebar/Sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const nunito_sans = Nunito_Sans({
     weight: ["200", "300", "400", "600", "700", "800", "900"],
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
         "SSG Next.js",
     ],
     icons: {
-        icon: [{ url: "/favicons/favicon.ico" }], // Array format helps Next.js internal keying
+        icon: [{ url: "/favicons/favicon.ico" }],
         apple: [{ url: "/favicons/apple-touch-icon.png" }],
     },
 
@@ -48,6 +49,8 @@ export default function RootLayout({
             <body className={`${nunito_sans.className} antialiased`}>
                 <Providers>
                     <Sidebar />
+                    <SidebarTrigger />
+
                     <main>{children}</main>
                 </Providers>
             </body>
