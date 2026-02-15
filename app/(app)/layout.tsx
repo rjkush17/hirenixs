@@ -4,6 +4,7 @@ import "@/css/app/global.css";
 import Providers from "@/utils/Wrapper";
 import Sidebar from "@/components/sidebar/Sidebar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import Footer from "@/components/Footer/Footer";
 
 const nunito_sans = Nunito_Sans({
     weight: ["200", "300", "400", "600", "700", "800", "900"],
@@ -48,10 +49,17 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <body className={`${nunito_sans.className} antialiased`}>
                 <Providers>
-                    <Sidebar />
-                    <SidebarTrigger />
+                    <div className="flex min-h-screen w-full">
+                        <Sidebar />
 
-                    <main>{children}</main>
+                        <div className="flex flex-1 flex-col">
+                            <main className="flex-1 w-full">
+                                <SidebarTrigger />
+                                {children}
+                            </main>
+                            <Footer />
+                        </div>
+                    </div>
                 </Providers>
             </body>
         </html>

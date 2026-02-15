@@ -2,6 +2,7 @@ import { Nunito_Sans } from "next/font/google";
 import "@/css/app/global.css";
 import Providers from "@/utils/Wrapper";
 import AuthNavbar from "@/components/authNavbar/authNavbar";
+import Footer from "@/components/Footer/Footer";
 
 const nunito_sans = Nunito_Sans({
     weight: ["200", "300", "400", "600", "700", "800", "900"],
@@ -21,6 +22,7 @@ export default function RootLayout({
                     <main className="w-full">
                         <AuthNavbar />
                         {children}
+                        <Footer />
                     </main>
                 </Providers>
             </body>
