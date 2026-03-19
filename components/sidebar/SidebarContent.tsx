@@ -1,20 +1,28 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home } from "lucide-react";
+import { Home, UserRoundPen } from "lucide-react";
 import {
     SidebarContent as SidebarContainer,
     SidebarMenu,
     SidebarMenuItem,
     SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import { useSession } from "next-auth/react";
 
 function SidebarContent() {
+    const { data: session } = useSession();
+
     const navLinks = [
         {
             title: "Home",
             href: "/feed",
             icon: Home,
+        },
+        {
+            title: "My Profile",
+            href: `/profile/${session?.user?.username}`,
+            icon: UserRoundPen,
         },
     ];
 

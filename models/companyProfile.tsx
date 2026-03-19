@@ -3,7 +3,7 @@ import mongoose, { Schema, Types, Model, Document } from "mongoose";
 export interface ICompanyProfile extends Document {
     userID: Types.ObjectId;
     industry_type: string;
-    description: string;
+    description?: string;
     location: {
         city: string;
         state: string;

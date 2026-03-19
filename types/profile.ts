@@ -5,12 +5,17 @@ export interface User {
         publicID: string;
     };
     username: string;
-    title: string;
-    location?: {
+    title?: string;
+    description?: string;
+}
+
+export interface About {
+    employee?: string;
+    website?: string;
+    location: {
         city: string;
         state: string;
     };
-    website?: string;
 }
 
 export interface IMonthYear {
@@ -18,19 +23,15 @@ export interface IMonthYear {
     year: number;
 }
 
-export type ProfileType = "individual" | "compnany";
+export type ProfileType = "individual" | "organization";
 
-export interface About {
-    description: string;
-}
-
-export interface Skill {
+export interface SocialLinks {
     platform: string;
     url: string;
 }
 
 export interface Experience {
-    compnany: string;
+    company: string;
     title: string;
     description: string;
     isPresent?: boolean;
@@ -41,6 +42,7 @@ export interface Experience {
 export interface Education {
     institute: string;
     course: string;
+    description?: string;
     startDate: IMonthYear;
-    endDate: IMonthYear;
+    endDate?: IMonthYear;
 }
