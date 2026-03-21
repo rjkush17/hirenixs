@@ -76,7 +76,7 @@ function FetchProfileDetails({ para }: { para: string }) {
 
     return (
         <main>
-            <UserHeader props={profileData.userheader} isOwn />
+            <UserHeader props={profileData.userheader}/>
         </main>
     );
 }
