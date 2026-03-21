@@ -1,5 +1,6 @@
 "use client";
 import useGET from "@/hooks/useGET";
+import UserHeader from "@/components/Profile/UserHeader";
 import {
     User,
     About,
@@ -9,11 +10,13 @@ import {
     SocialLinks,
 } from "@/types/profile";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface ProfileResponse {
-    userheader?: User | null;
+    userheader: User | null;
     about?: About | null;
     type?: ProfileType | null;
+    skills?: string[] | null;
     experience?: Experience[] | null;
     education?: Education[] | null;
     socialLinks?: SocialLinks[] | null;
@@ -30,6 +33,9 @@ function FetchProfileDetails({ para }: { para: string }) {
         socialLinks: null,
         profiletype: null,
     });
+    const [isOwn, setIsOwn] = useState<boolean>(false);
+
+    const { data: session } = useSession();
 
     const {
         apiCall,
@@ -43,6 +49,8 @@ function FetchProfileDetails({ para }: { para: string }) {
         result: {
             message: string;
             response: ProfileResponse;
+            userID: string;
+            email: string;
         } | null;
     } = useGET();
 
@@ -52,10 +60,12 @@ function FetchProfileDetails({ para }: { para: string }) {
 
     useEffect(() => {
         if (!result) return;
-        const { response } = result;
+        const { response, userID, email } = result;
         setProfileData(response);
-        console.log("Profile data ", profileData);
-    }, [isLoading]);
+        if (email === session?.user.email && userID === session?.user?.userID) {
+            setIsOwn(true);
+        }
+    }, [result, session]);
 
     if (isLoading) {
         return <p>Loading pages</p>;
@@ -65,9 +75,9 @@ function FetchProfileDetails({ para }: { para: string }) {
     }
 
     return (
-        <>
-            <p>yay! its work</p>
-        </>
+        <main>
+            <UserHeader props={profileData.userheader} isOwn />
+        </main>
     );
 }
 export default FetchProfileDetails;
