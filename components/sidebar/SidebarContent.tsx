@@ -8,10 +8,8 @@ import {
     SidebarMenuItem,
     SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { useSession } from "next-auth/react";
 
-function SidebarContent() {
-    const { data: session } = useSession();
+function SidebarContent(props: { username: string }) {
 
     const navLinks = [
         {
@@ -21,7 +19,7 @@ function SidebarContent() {
         },
         {
             title: "My Profile",
-            href: `/profile/${session?.user?.username}`,
+            href: `/profile/${props?.username}`,
             icon: UserRoundPen,
         },
     ];
@@ -38,12 +36,12 @@ function SidebarContent() {
                     return (
                         <SidebarMenuItem key={item.href}>
                             <SidebarMenuButton
-                                className="justify-center"
+                                className="justify-center w-11/12 mx-auto"
                                 asChild
                                 isActive={isActive}
                             >
                                 <Link href={item.href}>
-                                    <Icon className="h-4 w-4 mr-2" />
+                                    <Icon className="h-4 w-4" />
                                     {item.title}
                                 </Link>
                             </SidebarMenuButton>

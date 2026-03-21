@@ -5,7 +5,9 @@ import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/sonner";
 import { ReactNode } from "react";
 import { Session } from "next-auth";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { getSidebarFromCookie } from "./getSidebarFromCookie";
+import { useState } from "react";
 
 type ProvidersProps = {
     children: ReactNode;
@@ -13,8 +15,9 @@ type ProvidersProps = {
 };
 
 export default function Providers({ children, session }: ProvidersProps) {
+    const [open, setOpen] = useState(getSidebarFromCookie);
     return (
-        <SidebarProvider>
+        <SidebarProvider open={open} onOpenChange={setOpen}>
             <SessionProvider session={session}>
                 <StoreProvider>
                     <ThemeProvider>

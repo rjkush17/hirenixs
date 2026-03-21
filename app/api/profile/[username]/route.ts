@@ -91,7 +91,6 @@ export async function GET(
                 about = {
                     location: companyProfile.location,
                     website: companyProfile.website,
-                    // employee: companyProfile.employee,
                 };
             }
         }
@@ -108,6 +107,8 @@ export async function GET(
         return NextResponse.json({
             message: "User data fetched successfully",
             response,
+            userID: user?._id,
+            email: user?.email,
         });
     } catch (error) {
         console.error("Internal Server Error:", error);

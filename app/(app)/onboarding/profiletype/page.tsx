@@ -8,6 +8,8 @@ import usePatch from "@/hooks/usePATCH";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircleIcon } from "lucide-react";
 
 export default function SelectRole() {
     const { data: session, update } = useSession();
@@ -81,14 +83,13 @@ export default function SelectRole() {
                         </Card>
                     ))}
                 </div>
-
-                {/* Continue button */}
-                <Card className="bg-red-700 text-white border-red-950 border-2">
-                    <CardContent>
-                        <b>⚠️ Important :</b> This profile type is permanent and cannot be
-                        changed in the future.
-                    </CardContent>
-                </Card>
+                <Alert variant="destructive" className="max-w-md border-destructive">
+                    <AlertCircleIcon />
+                    <AlertTitle>This Action Cannot be Undo</AlertTitle>
+                    <AlertDescription>
+                        This profile type is permanent and cannot be changed in the future.
+                    </AlertDescription>
+                </Alert>
                 {isLoading ? (
                     <Button className="w-full mt-2" disabled>
                         <Spinner /> Updating...

@@ -7,7 +7,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import Footer from "@/components/Footer/Footer";
 
 const nunito_sans = Nunito_Sans({
-    weight: ["200", "300", "400", "600", "700", "800", "900"],
+    weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
     variable: "--font-nunito_sans",
     subsets: ["latin"],
 });
@@ -39,6 +39,8 @@ export const metadata: Metadata = {
 
     manifest: "/site.webmanifest",
 };
+
+// FIX: disbable sidebar for themepreview and onbarding with tiggers
 
 export default function RootLayout({
     children,

@@ -12,7 +12,6 @@ export default function Page({
     return (
         <main>
             <ProfileComponent para={username} />
-            <p>ssd</p>
         </main>
     );
 }

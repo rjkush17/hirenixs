@@ -5,6 +5,7 @@ declare module "next-auth" {
         expires: string;
         user: {
             username: string;
+            userID: string;
             providerName: string;
             onboardingVerified: boolean;
             role: "individual" | "organization" | null;

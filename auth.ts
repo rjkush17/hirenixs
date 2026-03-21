@@ -8,6 +8,7 @@ import { IUser, User } from "@/models/user";
 import createUsername from "@/utils/generateUsername";
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import { Types } from "mongoose";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     trustHost: true,
@@ -73,15 +74,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
 
         async jwt({ token, user, trigger }) {
-            // ------------------------------
-            // 1️⃣ If user just signed in
-            // ------------------------------
             if (user && user.email) {
                 const userDetails = await User.findOne({ email: user.email });
 
                 if (!userDetails) return token;
 
                 // Fill token with all fields
+                token.userID = (userDetails._id as Types.ObjectId).toString();
                 token.name = userDetails.name;
                 token.avatar = userDetails.avatar;
                 token.username = userDetails.username;
@@ -113,6 +112,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return token;
         },
         async session({ session, token }: { session: Session; token: JWT }) {
+            session.user.userID = token.userID ?? undefined;
             session.user.name = token.name ?? undefined;
             session.user.avatar = token.avatar ?? undefined;
             session.user.username = token.username ?? undefined;

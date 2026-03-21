@@ -1,7 +1,6 @@
 // types/next-auth.d.ts
 // Augment NextAuth's types so `session.user.onboardingVerified` is recognized.
 
-
 interface Avatar {
     link: string;
     publicID: string;
@@ -13,6 +12,7 @@ declare module "next-auth" {
     // Extend the User type with your custom fields
     interface User {
         name?: string;
+        userID?: string;
         email?: string;
         avatar?: Avatar;
         username?: string;
@@ -34,6 +34,7 @@ declare module "next-auth/jwt" {
     interface JWT {
         id?: string;
         name?: string;
+        userID?: string;
         email?: string;
         avatar?: Avatar;
         username?: string;
