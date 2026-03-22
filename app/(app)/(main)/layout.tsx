@@ -40,8 +40,6 @@ export const metadata: Metadata = {
     manifest: "/site.webmanifest",
 };
 
-// FIX: disbable sidebar for themepreview and onbarding with tiggers
-
 export default function RootLayout({
     children,
 }: Readonly<{
