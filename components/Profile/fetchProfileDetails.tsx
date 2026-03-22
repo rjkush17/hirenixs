@@ -1,6 +1,7 @@
 "use client";
 import useGET from "@/hooks/useGET";
 import UserHeader from "@/components/Profile/UserHeader";
+import AboutSection from "@/components/Profile/AboutSection";
 import {
     User,
     About,
@@ -14,7 +15,7 @@ import { useSession } from "next-auth/react";
 
 interface ProfileResponse {
     userheader: User | null;
-    about?: About | null;
+    about: About | null;
     type?: ProfileType | null;
     skills?: string[] | null;
     experience?: Experience[] | null;
@@ -75,8 +76,9 @@ function FetchProfileDetails({ para }: { para: string }) {
     }
 
     return (
-        <main>
-            <UserHeader props={profileData.userheader}/>
+        <main className="mx-auto max-w-11/12 lg:max-w-8/12 flex flex-col gap-8">
+            <UserHeader props={profileData.userheader} isOwn={isOwn} />
+            <AboutSection props={profileData.about} isOwn={isOwn} />
         </main>
     );
 }
