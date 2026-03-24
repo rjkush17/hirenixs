@@ -1,71 +1,172 @@
 # Hirenixs
 
-Hirenixs is a Next.js 16 app for talent onboarding and hiring workflows.
-It supports multi-provider authentication, OTP flows, role-based onboarding (`individual` and `organization`), and profile management backed by MongoDB.
+Hirenixs is a Next.js 16 App Router project for talent profiles, onboarding, and early-stage hiring workflows.
 
-## Features
+The codebase currently includes:
 
-- NextAuth-based authentication with:
-  - Google OAuth
-  - GitHub OAuth
-  - Email/username + password credentials
-  - OTP login
-- Registration OTP verification by email
-- Forgot-password and reset-password flow by email
-- Role-based onboarding with guarded route flow:
-  - `individual` profile onboarding
-  - `organization` profile onboarding
-- Profile APIs for role updates and avatar upload/delete
-- MongoDB persistence with Mongoose models
-- Zod validation for onboarding payloads
+- A public marketing homepage
+- Auth.js / NextAuth v5 beta authentication
+- Email OTP registration verification
+- Email OTP login
+- Forgot-password and reset-password flows
+- Role-based onboarding for `individual` and `organization` users
+- Public profile pages by username
+- Profile image upload/delete through Cloudinary
 
-## Tech Stack
+## Current Product State
 
-- Next.js 16 (App Router + Turbopack)
-- React 19 + TypeScript
-- NextAuth v5 beta
+This repository is partially complete. A few things are clearly implemented, and a few are still in progress:
+
+- `/feed` exists but is currently a placeholder page
+- Individual onboarding is implemented as a multi-step client flow backed by Redux state
+- Organization onboarding is implemented as a single form
+- `/profile/[username]` fetches profile data from the API, but the page currently renders only the header and the organization-style "about" card
+- The organization onboarding form asks for employee range, but the current `CompanyProfile` schema does not persist that field
+- There are no automated tests in the repository yet
+
+## Feature Overview
+
+### Authentication
+
+- Credentials login with email or username + password
+- OTP login with email or username
+- Google OAuth
+- GitHub OAuth
+- Registration with email OTP verification before account creation
+- Forgot-password email flow with tokenized reset link
+
+### Onboarding
+
+- Authenticated users without completed onboarding are forced into onboarding by [`proxy.ts`](/home/zatch/Projects/hirenixs/proxy.ts)
+- Role selection is permanent once saved through the current API
+- `individual` onboarding collects:
+  - avatar
+  - title
+  - bio
+  - education
+  - experience
+  - skills
+  - social links
+- `organization` onboarding collects:
+  - avatar
+  - organization name
+  - description
+  - industry type
+  - website
+  - city/state
+
+### Profiles
+
+- Public profile route: `/profile/[username]`
+- Profile API aggregates user data from `User`, `UserProfile`, and `CompanyProfile`
+- Owners can upload or remove their profile image
+
+## Stack
+
+- Next.js 16
+- React 19
+- TypeScript 5
+- Auth.js / `next-auth` v5 beta
 - MongoDB + Mongoose
 - Redux Toolkit
-- Tailwind CSS 4 + Radix UI
-- Zod
+- Tailwind CSS 4
+- shadcn/ui + Radix UI
+- React Hook Form + Zod
 - Nodemailer
 - Cloudinary
 
-## Project Structure
+## Directory Map
 
 ```txt
 app/
-  (public)/                # Public pages (home, theme preview)
-  (app)/                   # Authenticated app routes (feed, onboarding, auth pages)
-  (app)/api/               # API route handlers
-components/                # Reusable UI and feature components
-database/                  # MongoDB connection helper
-lib/                       # Auth providers, validation, mailer, cloudinary, utils
-middlewares/               # Onboarding route guard logic
-models/                    # Mongoose models
-store/                     # Redux store and slices
-utils/                     # Utility functions and email templates
+  (public)/                    Public landing page
+  (authPages)/auth/            Login, register, forgot password, reset password
+  (app)/(main)/                Authenticated app pages with sidebar
+  (app)/(noSidebar)/           Onboarding and utility pages without sidebar
+  api/                         Route handlers
+
+auth.ts                        Auth.js config and callbacks
+proxy.ts                       Route protection + onboarding redirects
+database/                      MongoDB connection helper
+models/                        Mongoose schemas
+lib/                           Auth providers, Zod schemas, Cloudinary, mailer, utils
+components/                    UI and feature components
+store/                         Redux store for onboarding flow state
+hooks/                         Fetch helpers and onboarding redirect hook
+utils/                         Email templates and small utilities
+css/                           App and public styles
 ```
 
-## Prerequisites
+## Important Routes
 
-- Node.js 20+
-- npm, pnpm, or yarn
-- MongoDB instance (local or Atlas)
-- Cloudinary account (for uploads)
-- SMTP credentials (for OTP/reset emails)
-- OAuth apps (Google and GitHub) if you want social login
+### Public
+
+- `/` marketing homepage
+- `/auth/login`
+- `/auth/register`
+- `/auth/forgot-password`
+- `/auth/resetpassword`
+
+### Authenticated
+
+- `/feed`
+- `/profile/[username]`
+- `/onboarding/profiletype`
+- `/onboarding/organization`
+- `/onboarding/individual/profile`
+- `/onboarding/individual/education`
+- `/onboarding/individual/experience`
+- `/onboarding/individual/skills`
+- `/onboarding/individual/sociallinks`
+- `/themepreview`
+
+## API Overview
+
+### Auth
+
+- `POST /api/auth/registration`
+- `POST /api/auth/verifyregistrationotp`
+- `POST /api/auth/otplogin`
+- `POST /api/auth/forgotpassword`
+- `POST /api/auth/resetpassword`
+- `GET|POST /api/auth/[...nextauth]`
+
+### Onboarding
+
+- `POST /api/onboarding/individual`
+- `POST /api/onboarding/organization`
+
+### Profile
+
+- `GET /api/profile/[username]`
+- `PATCH /api/profile/updateRole`
+- `POST /api/profile/upload`
+- `POST /api/profile/delete`
+
+## Session and Routing Behavior
+
+- Auth.js uses JWT sessions
+- Session data is enriched with:
+  - `userID`
+  - `avatar`
+  - `username`
+  - `role`
+  - `onboardingVerified`
+  - `providerName`
+- Visiting `/` while logged in redirects to `/feed`
+- Visiting `/auth/*` while logged in redirects back into the app
+- Visiting private routes while logged out redirects to `/`
+- Users with incomplete onboarding are locked into the onboarding flow until completion
 
 ## Environment Variables
 
-Create a `.env` file in the project root:
+Create a local `.env` file and add the values below.
 
 ```bash
 DATABASE_URL="mongodb://localhost:27017/hirenixs"
-# Optional alternative URI if you use Atlas directly in code/config:
-ALTAS_URL=""
 
 AUTH_SECRET=""
+NEXTAUTH_URL="http://localhost:5500"
 BASE_URL="http://localhost:5500"
 
 GOOGLE_CLIENT_ID=""
@@ -83,11 +184,26 @@ EMAIL_PASS=""
 ```
 
 Notes:
-- `DATABASE_URL` is required by the DB connector.
-- `BASE_URL` is used for forgot/reset password links.
-- Do not commit real secrets to git.
 
-## Installation
+- `DATABASE_URL` is required at startup
+- `BASE_URL` is used in forgot-password emails and must match the app URL users open in the browser
+- `NEXTAUTH_URL` and `AUTH_SECRET` should be set for Auth.js even though they are not read directly in this repository's source files
+- Google and GitHub env vars are required if you keep those OAuth providers enabled in [`auth.ts`](/home/zatch/Projects/hirenixs/auth.ts)
+- Email credentials are required for registration OTP, login OTP, and password reset mail
+- Cloudinary credentials are required for avatar upload/delete
+- Do not commit real secrets
+
+## Prerequisites
+
+- Node.js 20+
+- MongoDB
+- A Gmail account or SMTP-compatible credentials usable with the current Nodemailer setup
+- Cloudinary account
+- Google and GitHub OAuth apps if you want social login enabled
+
+## Install
+
+Use one package manager consistently:
 
 ```bash
 npm install
@@ -107,53 +223,65 @@ yarn install
 
 ## Run Locally
 
-Default dev server:
+Default development server:
 
 ```bash
 npm run dev
 ```
 
-Custom app port (`5500`):
+Custom port used throughout the app's current mail/reset configuration:
 
 ```bash
 npm run app
 ```
 
-Then open `http://localhost:3000` (or `http://localhost:5500` for `npm run app`).
+Open:
 
-## Available Scripts
+- `http://localhost:3000` for `npm run dev`
+- `http://localhost:5500` for `npm run app`
 
-- `npm run dev` - Start Next.js dev server with Turbopack
-- `npm run app` - Start dev server on port `5500`
-- `npm run build` - Build production bundle
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
+If you use port `3000`, update `BASE_URL` and `NEXTAUTH_URL` accordingly.
 
-## Auth + Onboarding Flow
+## Scripts
 
-1. User registers or signs in (OAuth, credentials, or OTP).
-2. Middleware checks session and onboarding completion.
-3. If onboarding is incomplete, user is forced into onboarding routes.
-4. Individual or organization onboarding data is validated with Zod and stored in MongoDB.
-5. On successful onboarding, `onboardingVerified` is set and normal app routes unlock.
+- `npm run dev` start the dev server with Turbopack
+- `npm run app` start the dev server on port `5500`
+- `npm run build` build the app
+- `npm run start` start the production server
+- `npm run lint` run ESLint
 
-## API Endpoints (high level)
+## Data Models
 
-- `app/(app)/api/auth/*`:
-  - registration + OTP verification
-  - OTP login
-  - forgot password
-  - reset password
-  - NextAuth handler
-- `app/(app)/api/onboarding/*`:
-  - individual onboarding submit
-  - organization onboarding submit
-- `app/(app)/api/profile/*`:
-  - upload/delete profile image
-  - update role
+### `User`
 
-## Notes
+- account identity
+- auth provider details
+- username
+- role
+- onboarding completion flag
+- avatar
+- password / reset token fields for credentials auth
 
-- Route access is controlled by `proxy.ts` and `middlewares/onboarding.tsx`.
-- Email features rely on valid SMTP credentials.
-- Media upload features rely on valid Cloudinary credentials.
+### `UserProfile`
+
+- individual profile title and bio
+- skills
+- education
+- experience
+- social links
+- future-facing connection and saved job fields
+
+### `CompanyProfile`
+
+- organization description
+- industry type
+- city/state location
+- website
+
+## Known Gaps
+
+- `feed` is still placeholder content
+- profile rendering is incomplete relative to the data returned by the profile API
+- organization employee range is collected in the form but not persisted by the current schema
+- there is no automated test suite yet
+
