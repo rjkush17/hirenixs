@@ -3,8 +3,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Handshake, MessageCircle, SquarePen } from "lucide-react";
+import { useModal } from "@/components/Profile/useModel";
 
 function UserHeader({ props, isOwn }: { props: User | null; isOwn: boolean }) {
+    const { openModal } = useModal();
+
     if (!props) return null;
 
     return (
@@ -21,7 +24,10 @@ function UserHeader({ props, isOwn }: { props: User | null; isOwn: boolean }) {
                         <AvatarFallback className="rounded-xl text-lg font-semibold">
                             {props.name?.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
-                        <span className="text-lg bg-primary p-2 rounded-xl absolute right-0 bottom-0">
+                        <span
+                            onClick={() => openModal("EditProfileImages")}
+                            className="text-lg bg-primary p-2 rounded-xl absolute right-0 bottom-0"
+                        >
                             <SquarePen />
                         </span>
                     </Avatar>

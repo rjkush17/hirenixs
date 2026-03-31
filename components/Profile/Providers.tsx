@@ -1,8 +1,12 @@
 "use client";
 import { createContext, useState, ReactNode } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import EditProfileImages from "@/components/Profile/EditComponents/EditProfileImages";
+import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
+import { UpdateSession } from "next-auth/react";
 
-type Section = "ProfileImages" | "ProfileHeader";
+type Section = "EditProfileImages" | "ProfileHeader";
 
 type FormType = Record<
     Section,
@@ -15,6 +19,8 @@ type FormType = Record<
 type ModalContextType = {
     openModal: (name: Section) => void;
     closeModal: () => void;
+    session: Session;
+    update: UpdateSession;
 };
 
 export const ModalContext = createContext<ModalContextType | null>(null);
@@ -22,13 +28,24 @@ export const ModalContext = createContext<ModalContextType | null>(null);
 export default function ModalProvider({ children }: { children: ReactNode }) {
     const [section, setSection] = useState<Section | null>(null);
 
+    const { data: session, status, update } = useSession();
+
+    //FIX: add proper UI in this places
+    if (status === "loading") return <p>Loading fucking pages</p>;
+    if (!session || !session?.user)
+        return (
+            <>
+                <p>please login pages</p>
+            </>
+        );
+
     const openModal = (name: Section) => setSection(name);
     const closeModal = () => setSection(null);
 
     const forms: FormType = {
-        ProfileImages: {
-            title: "title 1",
-            component: <div>Here is the component 1</div>,
+        EditProfileImages: {
+            title: "Upload New Profie Image",
+            component: <EditProfileImages />,
         },
         ProfileHeader: {
             title: "title 2",
@@ -37,7 +54,7 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <ModalContext.Provider value={{ openModal, closeModal }}>
+        <ModalContext.Provider value={{ openModal, closeModal, session, update }}>
             {children}
             <Dialog open={!!section} onOpenChange={closeModal}>
                 <DialogContent>

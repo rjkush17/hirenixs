@@ -1,7 +1,7 @@
 "use client";
 import useGET from "@/hooks/useGET";
-import UserHeader from "@/components/Profile/UserHeader";
-import AboutSection from "@/components/Profile/AboutSection";
+import UserHeader from "@/components/Profile/Sections/UserHeader";
+import AboutSection from "@/components/Profile/Sections/AboutSection";
 import {
     User,
     About,
@@ -11,7 +11,8 @@ import {
     SocialLinks,
 } from "@/types/profile";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useModal } from "@/components/Profile/useModel";
+import { Session } from "next-auth";
 
 interface ProfileResponse {
     userheader: User | null;
@@ -36,7 +37,7 @@ function FetchProfileDetails({ para }: { para: string }) {
     });
     const [isOwn, setIsOwn] = useState<boolean>(false);
 
-    const { data: session } = useSession();
+    const { session }: { session: Session } = useModal();
 
     const {
         apiCall,
