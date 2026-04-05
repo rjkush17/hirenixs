@@ -2,11 +2,12 @@
 import { createContext, useState, ReactNode } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import EditProfileImages from "@/components/Profile/EditComponents/EditProfileImages";
+import EditUserHeader from "@/components/Profile/EditComponents/EditUserHeader";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { UpdateSession } from "next-auth/react";
 
-type Section = "EditProfileImages" | "ProfileHeader";
+type Section = "EditProfileImages" | "EditUserHeader";
 
 type FormType = Record<
     Section,
@@ -47,9 +48,9 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
             title: "Upload New Profie Image",
             component: <EditProfileImages />,
         },
-        ProfileHeader: {
-            title: "title 2",
-            component: <div>Here is the component 2</div>,
+        EditUserHeader: {
+            title: "Edit Your Profile Details",
+            component: <EditUserHeader />,
         },
     };
 

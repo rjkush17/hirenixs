@@ -23,7 +23,7 @@ export default function AppFooter() {
                     <Heart className="h-4 w-4 fill-red-500 text-red-500" />
                     by{" "}
                     <Link
-                        href="https://your-portfolio-link.com"
+                        href="https://rishabhkushwah.netlify.app/"
                         target="_blank"
                         className="font-medium text-foreground underline-offset-4 hover:underline"
                     >

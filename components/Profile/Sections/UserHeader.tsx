@@ -52,7 +52,10 @@ function UserHeader({ props, isOwn }: { props: User | null; isOwn: boolean }) {
                 </div>
                 <div className="flex flex-col gap-4 justify-center">
                     {isOwn ? (
-                        <Button className="text-lg">
+                        <Button
+                            className="text-lg"
+                            onClick={() => openModal("EditUserHeader")}
+                        >
                             <SquarePen /> Edit
                         </Button>
                     ) : (

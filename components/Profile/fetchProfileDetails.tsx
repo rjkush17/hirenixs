@@ -68,7 +68,7 @@ function FetchProfileDetails({ para }: { para: string }) {
             setIsOwn(true);
         }
     }, [result, session]);
-
+//FIX: ADD loading and error screen
     if (isLoading) {
         return <p>Loading pages</p>;
     }
@@ -80,6 +80,7 @@ function FetchProfileDetails({ para }: { para: string }) {
         <main className="mx-auto max-w-11/12 lg:max-w-8/12 flex flex-col gap-8">
             <UserHeader props={profileData.userheader} isOwn={isOwn} />
             <AboutSection props={profileData.about} isOwn={isOwn} />
+
         </main>
     );
 }
